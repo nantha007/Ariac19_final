@@ -104,7 +104,7 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
     if(product_type == "pulley_part")
         part_pose.position.z += 0.08;
         rackDrop.position.z = 1.2;
-    double offset = part_pose.position.z*0.1;
+    double offset = part_pose.position.z*0.05;
     bool failed_pick;
     if (agv_id ==1){
         
@@ -116,7 +116,8 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
             while(!failed_pick){
                 failed_pick = arm2_.PickPart(part_pose);
             }
-            arm2_.SendRobotExch("arm2",offset*-1);
+            arm2_.SendRobotExch("arm2",-0.5);
+            // arm2_.SendRobotExch("arm2",offset*-1);
             arm1_.SendRobotExch("arm1",0.0);
             arm1_.GripperToggle(true);
             while (!arm1_.GetGripperState()) {
@@ -124,7 +125,7 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
                 ROS_INFO_STREAM("Actuating the gripper...");
                 arm1_.GripperToggle(true);
                 ros::spinOnce();
-                offset += 0.02;
+                offset += 0.01;
             }
             arm2_.GripperToggle(false);
             arm1_.SendRobotExch("arm1",-0.5);
@@ -169,15 +170,16 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
             arm1_.SendRobotExch("arm1",-0.5);
             ROS_WARN_STREAM("Picking up state "<< failed_pick);
             ros::Duration(1).sleep();
-            arm2_.SendRobotExch("arm2",offset);
+            arm2_.SendRobotExch("arm2",-0.5);
+            // arm2_.SendRobotExch("arm2",offset);
             arm1_.SendRobotExch("arm1",0.0);
             arm1_.GripperToggle(true);
             while (!arm1_.GetGripperState()) {
-                arm2_.SendRobotExch("arm2",offset*-1);
+                arm2_.SendRobotExch("arm2",offset);
                 ROS_INFO_STREAM("Actuating the gripper...");
                 arm1_.GripperToggle(true);
                 ros::spinOnce();
-                offset += 0.02;
+                offset += 0.01;
             }
             arm2_.GripperToggle(false);
             arm1_.SendRobotExch("arm1",-0.5);
@@ -195,7 +197,8 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
             while(!failed_pick){
                 failed_pick = arm1_.PickPart(part_pose);
             }
-            arm1_.SendRobotExch("arm1",offset*-1);
+            arm1_.SendRobotExch("arm1",-0.5);
+            // arm1_.SendRobotExch("arm1",offset*-1);
             arm2_.SendRobotExch("arm2",0.0);
             arm2_.GripperToggle(true);
             while (!arm2_.GetGripperState()) {
@@ -203,7 +206,7 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
                 ROS_INFO_STREAM("Actuating the gripper...");
                 arm2_.GripperToggle(true);
                 ros::spinOnce();
-                offset += 0.02;
+                offset += 0.01;
             }
             arm1_.GripperToggle(false);
             arm1_.SendRobotExch("arm1",-0.5);
@@ -249,7 +252,8 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
             arm2_.SendRobotExch("arm2",-0.5);
             ROS_WARN_STREAM("Picking up state "<< failed_pick);
             ros::Duration(1).sleep();
-            arm1_.SendRobotExch("arm1",offset*-1);
+            arm1_.SendRobotExch("arm1",-0.5);
+            // arm1_.SendRobotExch("arm1",offset*-1);
             arm2_.SendRobotExch("arm2",0.0);
             arm2_.GripperToggle(true);
             while (!arm2_.GetGripperState()) {
@@ -257,7 +261,7 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
                 ROS_INFO_STREAM("Actuating the gripper...");
                 arm2_.GripperToggle(true);
                 ros::spinOnce();
-                offset += 0.02;
+                offset += 0.01;
             }
             arm1_.GripperToggle(false);
             arm1_.SendRobotExch("arm1",-0.5);
@@ -816,11 +820,7 @@ void AriacOrderManager::ClearTray(int agv_id){
 
 void AriacOrderManager::ConvCollect(int current_order_count) {
 
-    ROS_INFO_STREAM("Picking parts from the conveyer");
     std::vector<std::string> conveyer_parts;
-    ros::Duration(2.0).sleep();
-    ros::spinOnce();
-    ros::Duration(2.0).sleep();
     products_check_list_ = camera_.get_product_frame_list();
     products_list_ = camera_.get_product_frame_list();
 
@@ -856,6 +856,7 @@ void AriacOrderManager::ConvCollect(int current_order_count) {
     int i=0;
     geometry_msgs::Pose conv_part_pose;
     for (const auto &product: conveyer_parts){
+        ROS_INFO_STREAM("Picking parts from the conveyer");
         product_type_pose_.first = product;
         product_type_pose_.second = drop_bin_pose;
         if (i==0){

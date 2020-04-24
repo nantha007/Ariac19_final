@@ -31,7 +31,7 @@ orders:
     shipment_count: 2
     products:
       part_0:
-        type: order_part1
+        type: order_part2
         pose:
           xyz: [0.11, -0.21, 0]
           rpy: ['pi' , 0, 'pi/2']

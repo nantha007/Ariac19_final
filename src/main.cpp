@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     ROS_INFO("Setup complete.");
 
     StartCompetition(node);    
-    ros::Duration(4.0).sleep();
+    ros::Duration(2.0).sleep();
     manager.ExecuteOrder();
     ros::Duration(2.0).sleep();
     EndCompetition(node);
