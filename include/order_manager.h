@@ -34,8 +34,8 @@ public:
     bool CheckOrderUpdate(int current_order_count, std::string orderID);
     void ClearTray(int agv_id);
     void ConvCollect(int current_order_count);
-    geometry_msgs::Pose PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id);
-    void PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id, geometry_msgs::Pose part_pose);
+    geometry_msgs::Pose PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id, double offset);
+    void PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id, geometry_msgs::Pose part_pose, double offset);
     std::pair<std::string, geometry_msgs::Pose> GetProductPair(std::string product_type);
     geometry_msgs::Pose FlipPartPickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id);
 
@@ -61,6 +61,7 @@ private:
     std::vector<std::pair<std::string, geometry_msgs::Pose>> bin_list_;
     std::vector<std::string> parts_list_kit_1_;
     std::vector<std::string> parts_list_kit_2_;
+    int conv_part_num_;
 
 };
 

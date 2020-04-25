@@ -28,7 +28,7 @@ public:
     void Execute();
     void GoToTarget(std::initializer_list<geometry_msgs::Pose> list);
     void GoToTarget(const geometry_msgs::Pose& pose);
-    void SendRobotHome(std::string pose);
+    void SendRobotHome(std::string pose, double offset=0.0);
     void SendRobotExch(std::string arm, double buffer);
     bool DropPart(geometry_msgs::Pose pose);
     bool DropPart(geometry_msgs::Pose pose, geometry_msgs::Pose part_pose);
@@ -41,6 +41,9 @@ public:
 
     bool GetGripperState(){
         return gripper_state_;
+    }
+    void SetPlanner(std::string planner){
+        robot_move_group_.setPlannerId(planner);
     }
 
 private:

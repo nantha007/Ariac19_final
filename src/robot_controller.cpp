@@ -18,22 +18,23 @@ robot_move_group_(robot_controller_options)
     arm_id_ = arm_id;
     ROS_WARN(">>>>> RobotController");
 
-    // robot_move_group_.setPlanningTime(20);
-    // robot_move_group_.setNumPlanningAttempts(10);
-    // robot_move_group_.setPlannerId("RRTConnectkConfigDefault");
-    // robot_move_group_.setMaxVelocityScalingFactor(0.9);
-    // robot_move_group_.setMaxAccelerationScalingFactor(0.9);
-    robot_move_group_.setPlanningTime(10);
-    robot_move_group_.setNumPlanningAttempts(3);
-    robot_move_group_.setPlannerId("TRRTkConfigDefault");
+    robot_move_group_.setPlanningTime(3);
+    robot_move_group_.setNumPlanningAttempts(1);
+    robot_move_group_.setPlannerId("RRTstarkConfigDefault");
     robot_move_group_.setMaxVelocityScalingFactor(0.9);
     robot_move_group_.setMaxAccelerationScalingFactor(0.9);
+    // robot_move_group_.setPlanningTime(10);
+    // robot_move_group_.setNumPlanningAttempts(3);
+    // robot_move_group_.setPlannerId("TRRTkConfigDefault");
+    // robot_move_group_.setMaxVelocityScalingFactor(0.9);
+    // robot_move_group_.setMaxAccelerationScalingFactor(0.9);
     // robot_move_group_.setEndEffector("moveit_ee");
     robot_move_group_.allowReplanning(true);
 
     home_joint_pose_bin_ = {0.0, 3.14, -1.26, 2.6, 3.55, -1.60, 0};
     
-    home_joint_pose_bin_drop_ = {-1.0, 3.27, -1.88, 2.64, 3.90, -1.51, 0};
+    // home_joint_pose_bin_drop_ = {-1.0, 3.14, -1.26, 2.6, 3.55, -1.6, 0};
+    home_joint_pose_bin_drop_ = {-1.1, 3.14, -1.13, 2.60, 3.30, -1.6, 0};
 
     //-- The joint positions for the home position to pick from the conveyer belt
     if (arm_id == "arm1"){
@@ -220,7 +221,7 @@ void RobotController::SendRobotExch(std::string arm, double buffer){
     spinner.stop();
 }
 
-void RobotController::SendRobotHome(std::string pose) {
+void RobotController::SendRobotHome(std::string pose, double offset) {
     if (pose=="bin") {
         robot_move_group_.setJointValueTarget(home_joint_pose_bin_);
     }
@@ -254,6 +255,7 @@ void RobotController::SendRobotHome(std::string pose) {
         robot_move_group_.setJointValueTarget(part_exch_arm_2_pose_);
     }
     else if (pose=="drop_bin"){
+        home_joint_pose_bin_drop_[0] += offset;
         robot_move_group_.setJointValueTarget(home_joint_pose_bin_drop_);
     }
 
@@ -385,7 +387,7 @@ bool RobotController::PickPartFromConv(geometry_msgs::Pose& part_pose) {
     ros::spinOnce();
 
     auto temp_pose_1 = part_pose;
-    temp_pose_1.position.z += 0.3;
+    temp_pose_1.position.z += 0.5;
     ROS_INFO_STREAM("Going to waypoint...");
     this->GoToTarget(temp_pose_1);
     return gripper_state_;
