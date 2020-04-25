@@ -580,14 +580,14 @@ geometry_msgs::Pose AriacOrderManager::PickFromConv(const std::pair<std::string,
         std::string product_type = product_type_pose.first;
         ROS_WARN_STREAM("Product type >>>> " << product_type);
         int part_num{0};
-        while(this->GetProductFrame(product_type, true)=="-1"){
+        std::string product_frame = this->GetProductFrame(product_type, true);
+        while(product_frame=="-1"){
             ros::spinOnce();
             ros::Duration(1.0).sleep();
             ROS_WARN_STREAM_THROTTLE(20,"Waiting for product to arrive");
-            product_frame_list_conv_ = camera_.get_product_frame_list_conv();    
+            product_frame_list_conv_ = camera_.get_product_frame_list_conv();
+            product_frame = this->GetProductFrame(product_type, true);   
         }
-            
-        std::string product_frame = this->GetProductFrame(product_type, true);
         part_num = camera_.get_break_beam_trig_counter(2);
         if (part_num == 0) { part_num++; } 
         ROS_INFO_STREAM("Part Number >>>>>"<< part_num);
@@ -598,7 +598,7 @@ geometry_msgs::Pose AriacOrderManager::PickFromConv(const std::pair<std::string,
         auto temp_pose = part_pose;
         if(product_type == "pulley_part")
                 temp_pose.position.z += 0.08;
-        temp_pose.position.y = -0.5;
+        temp_pose.position.y = -0.4;
         // temp_pose.position.y = 1.05;
         //--task the robot to pick up this part
         ROS_INFO_STREAM("Moving to part...");
@@ -612,7 +612,12 @@ geometry_msgs::Pose AriacOrderManager::PickFromConv(const std::pair<std::string,
         while(camera_.get_break_beam_trig_counter(1)!=part_num){
             ros::spinOnce();
         }
-        temp_pose.position.z -= 0.02;
+        if (product_type=="piston_rod_part"){
+            temp_pose.position.z -= 0.02;
+        }
+        else{
+            temp_pose.position.z -= 0.01;
+        }
 
         bool failed_pick;
         if (agv_id==1){
@@ -691,7 +696,7 @@ void AriacOrderManager::PickFromConv(const std::pair<std::string,geometry_msgs::
         auto temp_pose = part_pose;
         if(product_type == "pulley_part")
                 temp_pose.position.z += 0.08;
-        temp_pose.position.y = -0.5;
+        temp_pose.position.y = -0.4;
         // temp_pose.position.y = 1.05;
         //--task the robot to pick up this part
         ROS_INFO_STREAM("Moving to part...");
@@ -705,7 +710,12 @@ void AriacOrderManager::PickFromConv(const std::pair<std::string,geometry_msgs::
         while(camera_.get_break_beam_trig_counter(1)!=part_num){
             ros::spinOnce();
         }
-        temp_pose.position.z -= 0.02;
+        if (product_type=="piston_rod_part"){
+            temp_pose.position.z -= 0.02;
+        }
+        else{
+            temp_pose.position.z -= 0.01;
+        }
 
         bool failed_pick;
         if (agv_id==1){
