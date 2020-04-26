@@ -23,6 +23,7 @@ robot_move_group_(robot_controller_options)
     robot_move_group_.setPlannerId("RRTstarkConfigDefault");
     robot_move_group_.setMaxVelocityScalingFactor(0.9);
     robot_move_group_.setMaxAccelerationScalingFactor(0.9);
+    robot_move_group_.setGoalPositionTolerance(0.005);
     // robot_move_group_.setPlanningTime(10);
     // robot_move_group_.setNumPlanningAttempts(3);
     // robot_move_group_.setPlannerId("TRRTkConfigDefault");
@@ -134,7 +135,7 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
     robot_move_group_.setJointValueTarget("wrist_3_joint",yaw);
     if (this->Planner()) {
         robot_move_group_.move();
-        ros::Duration(1.5).sleep();
+        ros::Duration(0.5).sleep();
     }
 
     spinner.stop();
@@ -153,7 +154,7 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
     tf::quaternionMsgToTF(fixed_orientation_,q);
     tf::Matrix3x3(q).getRPY(roll_def_,pitch_def_,yaw_def_);
 
-    ros::Duration(2.0).sleep();
+    ros::Duration(0.5).sleep();
 
 }
 
@@ -215,7 +216,7 @@ void RobotController::SendRobotExch(std::string arm, double buffer){
     spinner.start();
     if (this->Planner()) {
         robot_move_group_.move();
-        ros::Duration(1.5).sleep();
+        ros::Duration(0.5).sleep();
     }
 
     spinner.stop();
@@ -263,7 +264,7 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
     spinner.start();
     if (this->Planner()) {
         robot_move_group_.move();
-        ros::Duration(1.5).sleep();
+        ros::Duration(0.5).sleep();
     }
 
     spinner.stop();
@@ -281,7 +282,7 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
 
     tf::quaternionMsgToTF(fixed_orientation_,q);
     tf::Matrix3x3(q).getRPY(roll_def_,pitch_def_,yaw_def_);
-    ros::Duration(2.0).sleep();
+    ros::Duration(0.5).sleep();
 
 }
 
@@ -309,7 +310,7 @@ bool RobotController::DropPart(geometry_msgs::Pose part_pose, geometry_msgs::Pos
         auto temp_pose = part_pose;
         temp_pose.position.z += 0.1;
         this->GoToTarget({temp_pose, part_pose});
-        ros::Duration(2).sleep();
+        ros::Duration(0.5).sleep();
         ros::spinOnce();
 
         ROS_INFO_STREAM("Actuating the gripper...");
@@ -335,7 +336,7 @@ bool RobotController::DropPart(geometry_msgs::Pose part_pose) {
        auto temp_pose = part_pose;
        temp_pose.position.z += 0.1;
        this->GoToTarget({temp_pose, part_pose});
-       ros::Duration(2).sleep();
+       ros::Duration(0.5).sleep();
        ros::spinOnce();
         ROS_INFO_STREAM("Actuating the gripper...");
         this->GripperToggle(false);
@@ -387,7 +388,7 @@ bool RobotController::PickPartFromConv(geometry_msgs::Pose& part_pose) {
     ros::spinOnce();
 
     auto temp_pose_1 = part_pose;
-    temp_pose_1.position.z += 0.5;
+    temp_pose_1.position.z += 0.3;
     ROS_INFO_STREAM("Going to waypoint...");
     this->GoToTarget(temp_pose_1);
     return gripper_state_;

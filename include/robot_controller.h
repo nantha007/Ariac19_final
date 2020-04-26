@@ -45,6 +45,9 @@ public:
     void SetPlanner(std::string planner){
         robot_move_group_.setPlannerId(planner);
     }
+    void SetPlanningTime(int time){
+        robot_move_group_.setPlanningTime(time);
+    }
 
 private:
     ros::NodeHandle robot_controller_nh_;
