@@ -21,8 +21,8 @@ robot_move_group_(robot_controller_options)
     robot_move_group_.setPlanningTime(3);
     robot_move_group_.setNumPlanningAttempts(1);
     robot_move_group_.setPlannerId("RRTstarkConfigDefault");
-    robot_move_group_.setMaxVelocityScalingFactor(0.9);
-    robot_move_group_.setMaxAccelerationScalingFactor(0.9);
+    robot_move_group_.setMaxVelocityScalingFactor(1.0);
+    robot_move_group_.setMaxAccelerationScalingFactor(0.8);
     robot_move_group_.setGoalPositionTolerance(0.005);
     robot_move_group_.setGoalOrientationTolerance(0.005);
     robot_move_group_.setGoalJointTolerance(0.01);
@@ -37,7 +37,7 @@ robot_move_group_(robot_controller_options)
     home_joint_pose_bin_ = {0.0, 3.14, -1.26, 2.6, 3.55, -1.60, 0};
     
     // home_joint_pose_bin_drop_ = {-1.0, 3.14, -1.26, 2.6, 3.55, -1.6, 0};
-    home_joint_pose_bin_drop_ = {-1.1, 3.14, -1.13, 2.60, 3.30, -1.6, 0};
+    home_joint_pose_bin_drop_ = {-1.18, 0.25, -1.51, -2.51, -0.55, -4.65, 0};
 
     //-- The joint positions for the home position to pick from the conveyer belt
     if (arm_id == "arm1"){
@@ -64,7 +64,7 @@ robot_move_group_(robot_controller_options)
     part_flip_arm_1_pose_ = {-0.7, 4.65, -2.39, 2.14, 3.39, -1.51, 0};
     part_flip_arm_2_pose_ = {0.7, -1.63, -0.75, -2.14, 6.00, 1.75,0};
 
-    part_exch_arm_1_pose_ = {0.8, 1.76, -1.76, -2.01, -0.95, 1.5, 0};
+    part_exch_arm_1_pose_ = {0.8, 4.4, -1.76, 2.14, 4.25, -1.5, 0};
     part_exch_arm_2_pose_ = {-0.8, 1.38, -1.51, 2.2, 4, -1.63, 0};    
 
     //-- offset used for picking up parts
@@ -291,7 +291,7 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
 void RobotController::GripperToggle(const bool& state) {
     gripper_service_.request.enable = state;
     gripper_client_.call(gripper_service_);
-    ros::Duration(1.0).sleep();
+    ros::Duration(0.5).sleep();
     if (gripper_service_.response.success) {
         ROS_INFO_STREAM("Gripper activated!");
     } else {
@@ -342,8 +342,6 @@ bool RobotController::DropPart(geometry_msgs::Pose part_pose) {
        ros::spinOnce();
         ROS_INFO_STREAM("Actuating the gripper...");
         this->GripperToggle(false);
-    
-
     }
 
     drop_flag_ = false;
