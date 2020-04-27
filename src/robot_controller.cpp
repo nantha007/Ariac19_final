@@ -53,8 +53,8 @@ robot_move_group_(robot_controller_options)
     // home_joint_pose_kit1_ = {1.18, 1.51, -1.26, 1.88, 4.02, -1.51, 0};
     home_joint_pose_kit1_ = {1.18, 1.51, -1.00, 2.01, 3.66, -1.51, 0};
     
-    // home_joint_pose_kit2_ = {-1.18, 4.52, -1.26, 1.88, 4.02, -1.51, 0};
-    home_joint_pose_kit2_ = {-1.18, 4.52, -1.00, 2.01, 3.66, -1.51, 0};
+    home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
+    // home_joint_pose_kit2_ = {-1.18, 4.52, -1.00, 2., 3.66, -1.51, 0};
 
 
     home_arm_1_pose_ = {1.18, 0, -1.51, 0, 2.89, -1.51, 0};
