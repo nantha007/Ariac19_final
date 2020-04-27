@@ -24,6 +24,8 @@ robot_move_group_(robot_controller_options)
     robot_move_group_.setMaxVelocityScalingFactor(0.9);
     robot_move_group_.setMaxAccelerationScalingFactor(0.9);
     robot_move_group_.setGoalPositionTolerance(0.005);
+    robot_move_group_.setGoalOrientationTolerance(0.005);
+    robot_move_group_.setGoalJointTolerance(0.01);
     // robot_move_group_.setPlanningTime(10);
     // robot_move_group_.setNumPlanningAttempts(3);
     // robot_move_group_.setPlannerId("TRRTkConfigDefault");

@@ -20,7 +20,7 @@ orders:
     destinations: [agv2]
     products:
       product_0:
-        type: order_part1
+        type: order_part2
         pose:
           xyz: [0.1, -0.2, 0]
           rpy: [0, 0, 0]
