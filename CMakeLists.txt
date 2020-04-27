@@ -34,10 +34,6 @@ add_executable(ariac_example_node src/main.cpp src/order_manager.cpp src/robot_c
 add_dependencies(ariac_example_node ${catkin_EXPORTED_TARGETS})
 target_link_libraries(ariac_example_node ${catkin_LIBRARIES})
 
-add_executable(watch_conveyor_node src/watch_conveyor.cpp)
-add_dependencies(watch_conveyor_node ${catkin_EXPORTED_TARGETS})
-target_link_libraries(watch_conveyor_node ${catkin_LIBRARIES})
-
 #############
 ## Install ##
 #############

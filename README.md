@@ -41,27 +41,4 @@ source ~/catkin_ws/devel/setup.bash (Hoping the folder is in home directory)
 rosrun group3_final_project ariac_example_node
 ```
 
-## Watch Conveyor Node
-
-To test the watch_conveyor code
-
--In terminal 1:
-
-	source /opt/ros/melodic/setup.bash
-	cd ~/catkin_ws/
-	catkin_make --only-pkg-with-deps group3_final_project
-	source ~/catkin_ws/devel/setup.bash (Hoping the folder is in home directory)
-	roslaunch group3_final_project watch_conveyor.launch 
-
--In terminal 2:
-	
-	source /opt/ros/melodic/setup.bash
-	source ~/catkin_ws/devel/setup.bash
-	rosrun group3_final_project watch_conveyor_node
-
-	
-
-
-
-
 	
