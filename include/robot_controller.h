@@ -75,6 +75,7 @@ private:
     std::vector<double> home_joint_pose_conv_;
     std::vector<double> home_joint_pose_bin_;
     std::vector<double> home_joint_pose_kit1_;
+    std::vector<double> home_joint_pose_kit1_p2_;
     std::vector<double> home_joint_pose_kit2_;
     std::vector<double> home_arm_1_pose_;
     std::vector<double> home_arm_2_pose_;

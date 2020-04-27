@@ -60,6 +60,8 @@ AriacSensorManager::AriacSensorManager(){
     break_beam_1_ = false;
     break_beam_2_ = false;
 
+    is_part = false;
+
     // ros::spin();
 
 }
@@ -347,7 +349,6 @@ void AriacSensorManager::breakBeam2Callback(const osrf_gear::Proximity::ConstPtr
 }
 
 void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::ConstPtr & laser_msg){
-    ROS_WARN_STREAM("Laser profiler call");
     auto ranges = laser_msg->ranges;
 
     auto max = laser_msg->angle_max;
@@ -442,9 +443,9 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
 
         std::string type;
         if(bound_h < 8)
-            type = "piston rod";
+            type = "piston_rod_part";
         else if(bound_h >= 8)
-            type = "gear";
+            type = "gear_part";
 
         double time = start_time.toSec()+(end_time.toSec() - start_time.toSec())/2;
 

@@ -79,8 +79,10 @@ public:
         } else{
             return faulty_parts_2_num_;
         }
+    }
 
-
+    std::vector<std::tuple<std::string,double,geometry_msgs::Pose>> get_conveyor_list(){
+        return conveyor_parts_;
     }
 
     // void reset();

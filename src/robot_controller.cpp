@@ -53,6 +53,8 @@ robot_move_group_(robot_controller_options)
     // home_joint_pose_kit1_ = {1.18, 1.51, -1.26, 1.88, 4.02, -1.51, 0};
     home_joint_pose_kit1_ = {1.18, 1.51, -1.00, 2.01, 3.66, -1.51, 0};
     
+    home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
+    
     home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
     // home_joint_pose_kit2_ = {-1.18, 4.52, -1.00, 2., 3.66, -1.51, 0};
 
@@ -241,6 +243,9 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
             robot_move_group_.setJointValueTarget(joint_name, home_joint_pose_kit2_[i]);
             i++;
         }
+    }
+    else if (pose == "kit1_p2"){
+        robot_move_group_.setJointValueTarget(home_joint_pose_kit1_p2_);
     }
     else if (pose=="conv"){
         robot_move_group_.setJointValueTarget(home_joint_pose_conv_);

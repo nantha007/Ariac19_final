@@ -37,6 +37,7 @@ public:
     void PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id, geometry_msgs::Pose part_pose, double offset);
     std::pair<std::string, geometry_msgs::Pose> GetProductPair(std::string product_type);
     geometry_msgs::Pose FlipPartPickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id);
+    void PickFromConv2(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id);
 
 private:
     ros::NodeHandle order_manager_nh_;
@@ -61,6 +62,7 @@ private:
     std::vector<std::string> parts_list_kit_1_;
     std::vector<std::string> parts_list_kit_2_;
     int conv_part_num_;
+    std::vector<std::tuple<std::string,double,geometry_msgs::Pose>> products_conveyor_list_;
 
 };
 
