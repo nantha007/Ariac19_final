@@ -31,6 +31,7 @@
 #include <std_msgs/String.h>
 #include <std_srvs/Trigger.h>
 #include <trajectory_msgs/JointTrajectory.h>
+#include <geometry_msgs/Pose.h>
 // %EndTag(INCLUDE_STATEMENTS)%
 
 // %Tag(START_COMP)%
@@ -81,8 +82,6 @@ public:
 
     std::vector<std::string> priority_list;
     
-    // int product_index = 0;
-    
     for(auto &product : shipment.products){
       // product_index++;
       int priority = 0;
@@ -108,24 +107,6 @@ public:
     ROS_INFO("Order to collect the parts");
     for (std::string &part : priority_list)
       ROS_INFO_STREAM(part);
-
-  }
-
-  /// Called when a new LogicalCameraImage message is received.
-  void conveyor_camera_callback(
-    const osrf_gear::LogicalCameraImage::ConstPtr & image_msg)
-  {
-    // ROS_INFO_STREAM_THROTTLE(10,
-    //   "Logical camera: '" << image_msg->models.size() << "' objects.");
-    auto models = image_msg->models;
-
-    logical_camera_parts_.clear();
-    logical_camera_part_poses_.clear();
-
-    for (auto &model : models){
-      logical_camera_parts_.push_back(model.type);
-      logical_camera_part_poses_.push_back(model.pose);
-    }
 
   }
 
@@ -185,7 +166,6 @@ public:
     		int h = int((range*cos(alpha)-.69)*-1000);
     		
     		if (h > 3){
-    			is_part = 1;
     			heights.push_back(h);
     			double x_pos = range*sin(alpha);
     			x_positions.push_back(x_pos);
@@ -194,9 +174,11 @@ public:
     }
 
   	if (heights.size() != 0) {
+      is_part = 1;
   		double w = x_positions.front() - x_positions.back();
   		offset = int((x_positions.front() + x_positions.back())/2 *1000);
-  		if (w<0)
+  		
+      if (w<0)
   			w = w*-1;
 
   		width = int(w*1000);
@@ -213,6 +195,8 @@ public:
 	  	start_time = laser_msg->header.stamp;
 	  	slice_widths.clear();
 	  	slice_heights.clear();
+      slice_offsets.clear();
+
 	  	slice_widths.push_back(width);
 	  	slice_heights.push_back(avg_height);
 	  	slice_offsets.push_back(offset);
@@ -247,39 +231,27 @@ public:
 
 	  	conveyor_parts_.push_back(cur_part);
 
-	  	ROS_INFO(" ");
-	  	ROS_INFO("A new part was detected. The current list of parts is:");
+	  	// ROS_INFO(" ");
+	  	// ROS_INFO("A new part was detected. The current list of parts is:");
 
 	  	for (auto &part: conveyor_parts_){
 	  		auto item_type = std::get<0>(part);
 	      auto break_beam_time = std::get<1>(part);
 	      auto x_pos = std::get<2>(part);
-	      ROS_INFO_STREAM("item: " << item_type << " | x position: " << x_pos << " | time at laser: " << break_beam_time);
+	      // ROS_INFO_STREAM("item: " << item_type << " | x position: " << x_pos << " | time at laser: " << break_beam_time);
 	  	}
 
 		}
-
     
   }
 
   /// Called when a new Proximity message is received.
   void break_beam_callback(const osrf_gear::Proximity::ConstPtr & msg) {
     if (msg->object_detected) {  // If there is an object in proximity.
-      // ROS_INFO("Break beam triggered.");
+      conveyor_parts_.erase(conveyor_parts_.begin());
+      
+      ROS_INFO_STREAM("Break beam triggered. There are " << conveyor_parts_.size() << " parts on the conveyor");
 
-      std::string type = logical_camera_parts_[0];
-      double time = msg->header.stamp.toSec();
-      double x = logical_camera_part_poses_[0].position.x;
-
-      auto cur_part = std::make_tuple(type,time,x);
-
-      conveyor_parts_.push_back(cur_part);
-
-      ROS_INFO("A new part was detected on the conveyor");
-      auto item_type = std::get<0>(conveyor_parts_.back());
-      auto break_beam_time = std::get<1>(conveyor_parts_.back());
-      auto x_pos = std::get<2>(conveyor_parts_.back());
-      ROS_INFO_STREAM("item: " << item_type << " | x position: " << x_pos << " | time at break beam: " << break_beam_time);
     }
   }
 
@@ -307,10 +279,6 @@ private:
   std::vector<int> slice_heights;
   std::vector<int> slice_offsets;
 
-
-
-
-
 };
 
 
@@ -336,25 +304,20 @@ int main(int argc, char ** argv) {
     &MyCompetitionClass::order_callback, &comp_class);
   // %EndTag(SUB_CLASS)%
 
-  // // Subscribe to the '/ariac/break_beam_1_change' topic.
-  // ros::Subscriber break_beam_subscriber = node.subscribe(
-  //   "/ariac/break_beam_2_change", 10,
-  //   &MyCompetitionClass::break_beam_callback, &comp_class);
+  // Subscribe to the '/ariac/break_beam_2_change' topic.
+  ros::Subscriber break_beam_subscriber = node.subscribe(
+    "/ariac/break_beam_2_change", 10,
+    &MyCompetitionClass::break_beam_callback, &comp_class);
 
-  // // Subscribe to the '/ariac/logical_camera_1' topic.
-  // ros::Subscriber conveyor_camera_subscriber = node.subscribe(
-  //   "/ariac/logical_camera_4", 10,
-  //   &MyCompetitionClass::conveyor_camera_callback, &comp_class);
+  // Subscribe to the '/ariac/logical_camera_2' topic.
+  ros::Subscriber bin3_camera_subscriber = node.subscribe(
+    "/ariac/logical_camera_2", 10,
+    &MyCompetitionClass::bin3_camera_subscriber, &comp_class);
 
-  // // Subscribe to the '/ariac/logical_camera_1' topic.
-  // ros::Subscriber bin3_camera_subscriber = node.subscribe(
-  //   "/ariac/logical_camera_2", 10,
-  //   &MyCompetitionClass::bin3_camera_subscriber, &comp_class);
-
-  // // Subscribe to the '/ariac/logical_camera_1' topic.
-  // ros::Subscriber bin4_camera_subscriber = node.subscribe(
-  //   "/ariac/logical_camera_3", 10,
-  //   &MyCompetitionClass::bin4_camera_subscriber, &comp_class);
+  // Subscribe to the '/ariac/logical_camera_3' topic.
+  ros::Subscriber bin4_camera_subscriber = node.subscribe(
+    "/ariac/logical_camera_3", 10,
+    &MyCompetitionClass::bin4_camera_subscriber, &comp_class);
 
  	comp_class.is_part = 0;
   ros::Subscriber laser_profiler_subscriber = node.subscribe(

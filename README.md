@@ -57,7 +57,7 @@ To test the watch_conveyor code
 	
 	source /opt/ros/melodic/setup.bash
 	source ~/catkin_ws/devel/setup.bash
-	rosrun watch_conveyor watch_conveyor_node
+	rosrun group3_final_project watch_conveyor_node
 
 	
 
