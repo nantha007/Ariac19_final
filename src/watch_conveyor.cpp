@@ -32,6 +32,7 @@
 #include <std_srvs/Trigger.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <geometry_msgs/Pose.h>
+#include <tf/transform_listener.h>
 // %EndTag(INCLUDE_STATEMENTS)%
 
 // %Tag(START_COMP)%
@@ -81,7 +82,7 @@ public:
     auto shipment = received_orders_.back().shipments[0];
 
     std::vector<std::string> priority_list;
-    
+
     for(auto &product : shipment.products){
       // product_index++;
       int priority = 0;
@@ -92,15 +93,15 @@ public:
         priority = 1;
         ROS_INFO("This part is in bin 3");
       }
-    
+
       else if (std::find(bin4_parts_.begin(), bin4_parts_.end(), part) != bin4_parts_.end()){
         priority = 1;
         ROS_INFO("This part is in bin 4");
       }
-      
+
       if (priority == 1)
         priority_list.push_back(product.type);
-      else 
+      else
         priority_list.insert(priority_list.begin(),product.type);
     }
 
@@ -159,25 +160,46 @@ public:
     int avg_height;
     int offset;
 
+    // For Calulcating part pose
+    std::string frame, world_frame;
+    world_frame = "/world";
+    geometry_msgs::Pose part_pose;
+    // part_pose.orientation.x = 0;
+    // part_pose.orientation.y = 0;
+    // part_pose.orientation.z = 0;
+    // part_pose.orientation.w = 0;
+    camera_tf_listener_.waitForTransform(world_frame, "/laser_profiler_1_laser_source_frame", ros::Time(0),
+                                             ros::Duration(3));
+    camera_tf_listener_.lookupTransform(world_frame, "/laser_profiler_1_laser_source_frame", ros::Time(0),
+                                            camera_tf_transform_);
+
+    part_pose.position.x = camera_tf_transform_.getOrigin().x();
+    part_pose.position.y = camera_tf_transform_.getOrigin().y();
+    double laser_y = part_pose.position.y;
+    part_pose.position.z = camera_tf_transform_.getOrigin().z();
+    // ROS_INFO_STREAM("The pose of the lp is x: " << part_pose.position.x << " y: "
+    //     <<part_pose.position.y << " z: "<<part_pose.position.z);
+
+
    	for (auto &range: ranges){
     	alpha = alpha + increment;
     	if(range<laser_msg->range_max && range>laser_msg->range_min)
     	{
     		int h = int((range*cos(alpha)-.69)*-1000);
-    		
+
     		if (h > 3){
     			heights.push_back(h);
     			double x_pos = range*sin(alpha);
     			x_positions.push_back(x_pos);
     		}
-    	}	
+    	}
     }
 
   	if (heights.size() != 0) {
       is_part = 1;
   		double w = x_positions.front() - x_positions.back();
   		offset = int((x_positions.front() + x_positions.back())/2 *1000);
-  		
+
       if (w<0)
   			w = w*-1;
 
@@ -224,10 +246,14 @@ public:
 	  	int sum = 0;
 	  	for (int &off: slice_offsets)
 	    	sum = sum + off;
-	    
+
 	    int x_offset = int(sum/slice_offsets.size());
-	  	
-	  	auto cur_part = std::make_tuple(type,time,x_offset);
+      part_pose.position.x = part_pose.position.x + x_offset/1000;
+      part_pose.position.y = -0.5;
+      part_pose.position.z = part_pose.position.z - 0.69 + bound_h/1000;
+
+      time = (laser_y + 0.5)/0.2 + time;
+	  	auto cur_part = std::make_tuple(type,time,part_pose);
 
 	  	conveyor_parts_.push_back(cur_part);
 
@@ -238,18 +264,20 @@ public:
 	  		auto item_type = std::get<0>(part);
 	      auto break_beam_time = std::get<1>(part);
 	      auto x_pos = std::get<2>(part);
-	      // ROS_INFO_STREAM("item: " << item_type << " | x position: " << x_pos << " | time at laser: " << break_beam_time);
+	      ROS_INFO_STREAM("item: " << item_type << " | x position: " << x_pos.position.x <<
+        " | y position: " << x_pos.position.y <<
+        " | z position: " << x_pos.position.z << " | time at laser: " << break_beam_time);
 	  	}
 
 		}
-    
+
   }
 
   /// Called when a new Proximity message is received.
   void break_beam_callback(const osrf_gear::Proximity::ConstPtr & msg) {
     if (msg->object_detected) {  // If there is an object in proximity.
       conveyor_parts_.erase(conveyor_parts_.begin());
-      
+
       ROS_INFO_STREAM("Break beam triggered. There are " << conveyor_parts_.size() << " parts on the conveyor");
 
     }
@@ -270,7 +298,7 @@ private:
   std::vector<std::string> bin4_parts_;
   std::vector<geometry_msgs::Pose> bin4_part_poses_;
 
-  std::vector<std::tuple<std::string,double,int>> conveyor_parts_;
+  std::vector<std::tuple<std::string,double,geometry_msgs::Pose>> conveyor_parts_;
 
   ros::Time start_time;
   ros::Time end_time;
@@ -278,6 +306,9 @@ private:
   std::vector<int> slice_widths;
   std::vector<int> slice_heights;
   std::vector<int> slice_offsets;
+
+  tf::TransformListener camera_tf_listener_;
+  tf::StampedTransform camera_tf_transform_;
 
 };
 
