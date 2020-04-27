@@ -52,10 +52,15 @@ robot_move_group_(robot_controller_options)
     "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"};
     // home_joint_pose_kit1_ = {1.18, 1.51, -1.26, 1.88, 4.02, -1.51, 0};
     home_joint_pose_kit1_ = {1.18, 1.51, -1.00, 2.01, 3.66, -1.51, 0};
+
+    home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
     
     home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
     
     home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
+    
+    home_joint_pose_kit2_p2_ = {-1.18, 4.52, -0.75, 1.51, 3.91, -1.51, 0};
+
     // home_joint_pose_kit2_ = {-1.18, 4.52, -1.00, 2., 3.66, -1.51, 0};
 
 
@@ -126,10 +131,12 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
     tf::Matrix3x3(Q).getRPY(roll,pitch,yaw_part);
     ROS_INFO_STREAM("Target yaw --> "<< yaw_target<<", part yaw -->"<< yaw_part);
     if (arm_id_=="arm1"){
-        yaw = (yaw_part-1.6) - yaw_target;
+        // yaw = (yaw_part-1.6) - yaw_target;
+        yaw = yaw_part - yaw_target;
     }
     else{
-        yaw = yaw_target - (yaw_part - 1.57);
+        // yaw = yaw_target - (yaw_part - 1.57);
+        yaw = yaw_part - yaw_target;
     }
     ROS_INFO_STREAM(">>>>> Rotation :"<< yaw);
     ros::AsyncSpinner spinner(4);
@@ -247,6 +254,12 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
     else if (pose == "kit1_p2"){
         robot_move_group_.setJointValueTarget(home_joint_pose_kit1_p2_);
     }
+<<<<<<< HEAD
+=======
+    else if (pose == "kit2_p2"){
+        robot_move_group_.setJointValueTarget(home_joint_pose_kit2_p2_);
+    }
+>>>>>>> ea498ab... Orientation correction, drop in kit challenge done
     else if (pose=="conv"){
         robot_move_group_.setJointValueTarget(home_joint_pose_conv_);
     }

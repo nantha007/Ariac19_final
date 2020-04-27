@@ -451,6 +451,25 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
                         << "," << StampedPose_out.pose.orientation.z<< "," << StampedPose_out.pose.orientation.w<<")");
         auto temp_frame = product_frame;
         temp_frame[15] = '8';
+        
+        arm1_.SendRobotHome("kit1_p2");
+        ros::Duration(1.0).sleep();
+        if (arm1_.GetGripperState()){
+            part_pose = camera_.GetPartPose("/world",temp_frame);
+        }
+        else{
+            part_pose = camera_.GetPartPose("/world",temp_frame);
+            if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
+                bool failed_pick = arm1_.PickPart(part_pose);
+                while(!failed_pick){
+                    failed_pick = arm1_.PickPart(part_pose);
+                }
+            }
+            else{
+                arm1_.SendRobotHome("kit1");
+                return temp_frame;
+            }
+        }
         parts_list_kit_1_.push_back(temp_frame);
         arm1_.SendRobotHome("kit1_p2");
     }
@@ -466,7 +485,27 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
                         << "," << StampedPose_out.pose.orientation.z<< "," << StampedPose_out.pose.orientation.w<<")");
         auto temp_frame = product_frame;
         temp_frame[15] = '9';
+        
+        arm2_.SendRobotHome("kit2_p2");
+        ros::Duration(1.0).sleep();
+        if (arm2_.GetGripperState()){
+            part_pose = camera_.GetPartPose("/world",temp_frame);
+        }
+        else{
+            part_pose = camera_.GetPartPose("/world",temp_frame);
+            if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
+                bool failed_pick = arm2_.PickPart(part_pose);
+                while(!failed_pick){
+                    failed_pick = arm2_.PickPart(part_pose);
+                }
+            }
+            else {
+                arm2_.SendRobotHome("kit2");
+                return temp_frame;
+            }
+        }
         parts_list_kit_2_.push_back(temp_frame);
+
     }
  
     if (agv_id==1){
@@ -541,7 +580,27 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
                         << "," << StampedPose_out.pose.orientation.z<< "," << StampedPose_out.pose.orientation.w<<")");
         auto temp_frame = product_frame;
         temp_frame[15] = '8';
+
+        arm1_.SendRobotHome("kit1_p2");
+        ros::Duration(1.0).sleep();
+        if (arm1_.GetGripperState()){
+            part_pose = camera_.GetPartPose("/world",temp_frame);
+        }
+        else{
+            part_pose = camera_.GetPartPose("/world",temp_frame);
+            if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
+                bool failed_pick = arm1_.PickPart(part_pose);
+                while(!failed_pick){
+                    failed_pick = arm1_.PickPart(part_pose);
+                }
+            }
+            else{
+                arm1_.SendRobotHome("kit1");
+                return false;
+            }
+        }
         parts_list_kit_1_.push_back(temp_frame);
+
     }
     else{
         arm2_.SendRobotHome("kit2");
@@ -555,7 +614,27 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
                         << "," << StampedPose_out.pose.orientation.z<< "," << StampedPose_out.pose.orientation.w<<")");
         auto temp_frame = product_frame;
         temp_frame[15] = '9';
+
+        arm2_.SendRobotHome("kit2_p2");
+        ros::Duration(1.0).sleep();
+        if (arm2_.GetGripperState()){
+            part_pose = camera_.GetPartPose("/world",temp_frame);
+        }
+        else{
+            part_pose = camera_.GetPartPose("/world",temp_frame);
+            if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
+                bool failed_pick = arm2_.PickPart(part_pose);
+                while(!failed_pick){
+                    failed_pick = arm2_.PickPart(part_pose);
+                }
+            }
+            else{
+                arm2_.SendRobotHome("kit2");
+                return false;
+            }
+        }
         parts_list_kit_2_.push_back(temp_frame);
+        
     }
     bool result;
     if (agv_id==1){
@@ -563,6 +642,13 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
     }
     else{
         auto result = arm2_.DropPart(StampedPose_out.pose, part_pose);
+    }
+
+    if (agv_id==1){
+        arm1_.SendRobotHome("kit1");
+    }
+    else{
+        arm2_.SendRobotHome("kit2");
     }
 
     return result;

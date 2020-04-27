@@ -284,19 +284,23 @@ geometry_msgs::Pose AriacSensorManager::GetPartPose(const std::string& src_frame
     ROS_INFO_STREAM("Getting part pose...");
     ROS_INFO_STREAM("Source Frame" << src_frame);
     ROS_INFO_STREAM("Target Frame" << target_frame);
-    
-    camera_tf_listener_.waitForTransform(src_frame, target_frame, ros::Time(0),
+    try{
+        camera_tf_listener_.waitForTransform(src_frame, target_frame, ros::Time(0),
                                              ros::Duration(3));
-    camera_tf_listener_.lookupTransform(src_frame, target_frame, ros::Time(0),
+        camera_tf_listener_.lookupTransform(src_frame, target_frame, ros::Time(0),
                                             camera_tf_transform_);
-
-    part_pose.position.x = camera_tf_transform_.getOrigin().x();
-    part_pose.position.y = camera_tf_transform_.getOrigin().y();
-    part_pose.position.z = camera_tf_transform_.getOrigin().z();
-    part_pose.orientation.x = camera_tf_transform_.getRotation().x();
-    part_pose.orientation.y = camera_tf_transform_.getRotation().y();
-    part_pose.orientation.z = camera_tf_transform_.getRotation().z();
-    part_pose.orientation.w = camera_tf_transform_.getRotation().w();
+        part_pose.position.x = camera_tf_transform_.getOrigin().x();
+        part_pose.position.y = camera_tf_transform_.getOrigin().y();
+        part_pose.position.z = camera_tf_transform_.getOrigin().z();
+        part_pose.orientation.x = camera_tf_transform_.getRotation().x();
+        part_pose.orientation.y = camera_tf_transform_.getRotation().y();
+        part_pose.orientation.z = camera_tf_transform_.getRotation().z();
+        part_pose.orientation.w = camera_tf_transform_.getRotation().w();
+    }
+    catch (tf::TransformException &ex){
+        part_pose.orientation.w = 100.0;
+        part_pose.orientation.z = 100.0;
+     }
 
     return part_pose;
 }
