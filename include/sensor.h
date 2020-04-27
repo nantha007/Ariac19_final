@@ -8,6 +8,9 @@
 #include <list>
 #include <map>
 #include <string>
+#include <algorithm>
+#include <vector>
+#include <tuple>
 
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseStamped.h>
@@ -15,6 +18,8 @@
 #include <tf/transform_listener.h>
 #include <osrf_gear/LogicalCameraImage.h>
 #include <osrf_gear/Proximity.h>
+#include <sensor_msgs/LaserScan.h>
+#include <sensor_msgs/Range.h>
 
 #include "ariac_part_manager.h"
 // #include "conveyor_controller.h"
@@ -32,6 +37,7 @@ public:
     void LogicalCamera7Callback(const osrf_gear::LogicalCameraImage::ConstPtr &);
     void QualitySensor1Callback(const osrf_gear::LogicalCameraImage::ConstPtr &);
     void QualitySensor2Callback(const osrf_gear::LogicalCameraImage::ConstPtr &);
+    void LaserProfilerCallback(const sensor_msgs::LaserScan::ConstPtr & laser_msg);
 
     geometry_msgs::Pose GetPartPose(const std::string& src_frame,
                                     const std::string& target_frame);
@@ -92,6 +98,7 @@ private:
     ros::Subscriber break_beam_2_subscriber_;
     ros::Subscriber quality_sensor_1_subscriber_;
     ros::Subscriber quality_sensor_2_subscriber_;
+    ros::Subscriber laser_profiler_subscriber_;
 
     // AriacConveyorManager convBelt_Sensor_;
 
@@ -120,4 +127,13 @@ private:
     bool init_, cam_1_, cam_2_,cam_3_, cam_4_, cam_5_, cam_6_, cam_7_, break_beam_1_, break_beam_2_;
     int camera1_frame_counter_, camera2_frame_counter_, camera3_frame_counter_, camera4_frame_counter_, camera5_frame_counter_,
         camera6_frame_counter_, camera7_frame_counter_, break_beam_1_trig_counter_, break_beam_2_trig_counter_, faulty_parts_1_num_, faulty_parts_2_num_;
+
+    std::vector<std::tuple<std::string,double,geometry_msgs::Pose>> conveyor_parts_;
+    ros::Time start_time;
+    ros::Time end_time;
+
+    std::vector<int> slice_widths;
+    std::vector<int> slice_heights;
+    std::vector<int> slice_offsets;
+    bool is_part;
 };
