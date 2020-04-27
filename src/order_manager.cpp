@@ -321,7 +321,7 @@ geometry_msgs::Pose AriacOrderManager::PickUp(std::string product_type, std::str
             while(!failed_pick){
                 failed_pick = arm2_.PickPart(part_pose);
             }
-            // arm2_.SendRobotHome("arm2_exch");
+            arm2_.SendRobotHome("arm2_exch");
             bool drop = arm2_.DropPart(rackDrop);
             arm2_.SendRobotHome("bin");
             rackDrop.position.z = 0.955;
@@ -366,7 +366,7 @@ geometry_msgs::Pose AriacOrderManager::PickUp(std::string product_type, std::str
             while(!failed_pick){
                 failed_pick = arm1_.PickPart(part_pose);
             }
-            // arm1_.SendRobotHome("arm1_exch");
+            arm1_.SendRobotHome("arm1_exch");
             bool drop = arm1_.DropPart(rackDrop);
             arm1_.SendRobotHome("bin");
             rackDrop.position.z = 0.955;
