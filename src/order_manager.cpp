@@ -954,7 +954,6 @@ void AriacOrderManager::ClearTray(int agv_id){
 
 void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id){
 
-
     if (agv_id==1){
         arm1_.SendRobotHome("conv");
     }
@@ -965,7 +964,7 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
     int part_num{0};
     geometry_msgs::Pose part_pose;
     ros::Duration timeout(10);
-    ros::Time start_time = ros::Time::now();
+    // ros::Time start_time = ros::Time::now();
     bool pick_state = false;
     double time;
 
@@ -977,6 +976,7 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
     while(!pick_state){
         ros::spinOnce();
         bool part_in_list = false;
+        ros::Time start_time = ros::Time::now();
         while(!part_in_list){
             ros::spinOnce();
             products_conveyor_list_ = camera_.get_conveyor_list();
@@ -1000,7 +1000,7 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
         auto temp_pose = part_pose;
 
         double wait_offset = .1;
-        double pick_offset = .024;
+        double pick_offset = .02;
 
         temp_pose.position.z += wait_offset;
 
@@ -1011,7 +1011,7 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
             arm2_.GoToTarget(temp_pose);
         }
 
-        double plan_time = 4;
+        double plan_time = 3;
 
         ROS_INFO("Waiting for the part..");
 

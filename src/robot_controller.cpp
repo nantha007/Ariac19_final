@@ -62,8 +62,6 @@ robot_move_group_(robot_controller_options)
     home_joint_pose_kit2_p2_ = {-1.18, 4.52, -0.75, 1.51, 3.91, -1.51, 0};
 
     // home_joint_pose_kit2_ = {-1.18, 4.52, -1.00, 2., 3.66, -1.51, 0};
-
-
     home_arm_1_pose_ = {1.18, 0, -1.51, 0, 2.89, -1.51, 0};
 
     home_arm_2_pose_ = {-1.18, -3.02, -1.51, 0, 3.28, -1.51, 0};
@@ -170,7 +168,15 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
 }
 
 void RobotController::GoToTarget(const geometry_msgs::Pose& pose) {
-    target_pose_.orientation = fixed_orientation_;
+    tf::Quaternion myQuaternion;
+    myQuaternion.setRPY(1.57, 1.57, 0);
+
+    // target_pose_.orientation = fixed_orientation_;
+    target_pose_.orientation.x = myQuaternion[0];
+    target_pose_.orientation.y = myQuaternion[1];
+    target_pose_.orientation.z = myQuaternion[2];
+    target_pose_.orientation.w = myQuaternion[3];
+
     target_pose_.position = pose.position;
     ros::AsyncSpinner spinner(4);
     robot_move_group_.setPoseTarget(target_pose_);
@@ -187,12 +193,19 @@ void RobotController::GoToTarget(std::initializer_list<geometry_msgs::Pose> list
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
+    tf::Quaternion myQuaternion;
+    myQuaternion.setRPY(1.57, 1.57, 0);
+
     std::vector<geometry_msgs::Pose> waypoints;
     for (auto i : list) {
-        i.orientation.x = fixed_orientation_.x;
-        i.orientation.y = fixed_orientation_.y;
-        i.orientation.z = fixed_orientation_.z;
-        i.orientation.w = fixed_orientation_.w;
+        // i.orientation.x = fixed_orientation_.x;
+        // i.orientation.y = fixed_orientation_.y;
+        // i.orientation.z = fixed_orientation_.z;
+        // i.orientation.w = fixed_orientation_.w;
+        i.orientation.x = myQuaternion[0];
+        i.orientation.y = myQuaternion[1];
+        i.orientation.z = myQuaternion[2];
+        i.orientation.w = myQuaternion[3];
         waypoints.emplace_back(i);
     }
 
@@ -301,6 +314,9 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
 
     tf::quaternionMsgToTF(fixed_orientation_,q);
     tf::Matrix3x3(q).getRPY(roll_def_,pitch_def_,yaw_def_);
+
+    ROS_INFO_STREAM("Roll: " << roll_def_ << "| Pitch: " <<  pitch_def_ << "| Yaw: " << yaw_def_);
+
     ros::Duration(0.5).sleep();
 
 }
