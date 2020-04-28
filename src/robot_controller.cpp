@@ -407,7 +407,7 @@ bool RobotController::PickPart(geometry_msgs::Pose& part_pose) {
         ros::spinOnce();
     }
     temp_pose_1 = part_pose;
-    temp_pose_1.position.x += 0.2;
+    temp_pose_1.position.x += 0.1;
     temp_pose_1.position.z += 0.5;
     ROS_INFO_STREAM("Going to waypoint...");
     this->GoToTarget(temp_pose_1);
