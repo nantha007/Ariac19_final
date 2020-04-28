@@ -25,7 +25,7 @@ robot_move_group_(robot_controller_options)
     robot_move_group_.setMaxAccelerationScalingFactor(0.8);
     robot_move_group_.setGoalPositionTolerance(0.005);
     robot_move_group_.setGoalOrientationTolerance(0.005);
-    robot_move_group_.setGoalJointTolerance(0.1);
+    robot_move_group_.setGoalJointTolerance(0.01);
     // robot_move_group_.setPlanningTime(10);
     // robot_move_group_.setNumPlanningAttempts(3);
     // robot_move_group_.setPlannerId("TRRTkConfigDefault");
@@ -36,8 +36,8 @@ robot_move_group_(robot_controller_options)
 
     home_joint_pose_bin_ = {0.0, 3.14, -1.26, 2.6, 3.55, -1.60, 0};
     
-    // home_joint_pose_bin_drop_ = {-1.0, 3.14, -1.26, 2.6, 3.55, -1.6, 0};
-    home_joint_pose_bin_drop_ = {-1.18, 0.25, -1.51, -2.51, -0.55, -4.65, 0};
+    home_joint_pose_bin_drop_ = {-1.18, 0.25, -2.14, -2.51, -0.31, -4.65, 0};
+    // home_joint_pose_bin_drop_ = {-1.18, 0.25, -1.51, -2.51, -0.55, -4.65, 0};
 
     //-- The joint positions for the home position to pick from the conveyer belt
     if (arm_id == "arm1"){
@@ -406,7 +406,8 @@ bool RobotController::PickPart(geometry_msgs::Pose& part_pose) {
         this->GripperToggle(true);
         ros::spinOnce();
     }
-
+    temp_pose_1 = part_pose;
+    temp_pose_1.position.z += 0.5;
     ROS_INFO_STREAM("Going to waypoint...");
     this->GoToTarget(temp_pose_1);
     return gripper_state_;
