@@ -55,7 +55,7 @@ robot_move_group_(robot_controller_options)
 
     home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
     
-    home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
+    home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.91, -1.51, 0};
     
     home_joint_pose_kit2_p2_ = {-1.18, 4.52, -0.75, 1.51, 3.91, -1.51, 0};
 
@@ -69,8 +69,8 @@ robot_move_group_(robot_controller_options)
     part_flip_arm_1_pose_ = {-0.7, 4.65, -2.39, 2.14, 3.39, -1.51, 0};
     part_flip_arm_2_pose_ = {0.7, -1.63, -0.75, -2.14, 6.00, 1.75,0};
 
-    part_exch_arm_1_pose_ = {0.8, 4.4, -1.76, 2.14, 4.25, -1.5, 0};
-    part_exch_arm_2_pose_ = {-0.8, 1.38, -1.51, 2.2, 4, -1.63, 0};    
+    part_exch_arm_1_pose_ = {1.18, 4.4, -1.76, 2.14, 4.25, -1.5, 0};
+    part_exch_arm_2_pose_ = {-1.18, 1.38, -1.51, 2.2, 4, -1.63, 0};    
 
     //-- offset used for picking up parts
     //-- For the pulley_part, the offset is different since the pulley is thicker
