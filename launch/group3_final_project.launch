@@ -22,7 +22,7 @@
           $(arg gui_args)
           $(arg fill_demo_shipment_args)
           --visualize-sensor-views
-          -f $(find group3_final_project)/config/eval3.yaml
+          -f $(find group3_final_project)/config/gear_part_conv.yaml
           $(find group3_final_project)/config/group3_final_project_config.yaml
           " required="true" output="screen" />
 </launch>

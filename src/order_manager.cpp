@@ -455,7 +455,10 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
         arm1_.SendRobotHome("kit1_p2");
         ros::Duration(1.0).sleep();
         if (arm1_.GetGripperState()){
-            part_pose = camera_.GetPartPose("/world",temp_frame);
+            auto temp_pose = camera_.GetPartPose("/world",temp_frame);
+            if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
+                part_pose = temp_pose;
+            }
         }
         else{
             part_pose = camera_.GetPartPose("/world",temp_frame);
@@ -488,7 +491,10 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
         arm2_.SendRobotHome("kit2_p2");
         ros::Duration(1.0).sleep();
         if (arm2_.GetGripperState()){
-            part_pose = camera_.GetPartPose("/world",temp_frame);
+            auto temp_pose = camera_.GetPartPose("/world",temp_frame);
+            if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
+                part_pose = temp_pose;
+            }
         }
         else{
             part_pose = camera_.GetPartPose("/world",temp_frame);
@@ -583,7 +589,10 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
         arm1_.SendRobotHome("kit1_p2");
         ros::Duration(1.0).sleep();
         if (arm1_.GetGripperState()){
-            part_pose = camera_.GetPartPose("/world",temp_frame);
+            auto temp_pose = camera_.GetPartPose("/world",temp_frame);
+            if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
+                part_pose = temp_pose;
+            }
         }
         else{
             part_pose = camera_.GetPartPose("/world",temp_frame);
@@ -617,7 +626,10 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
         arm2_.SendRobotHome("kit2_p2");
         ros::Duration(1.0).sleep();
         if (arm2_.GetGripperState()){
-            part_pose = camera_.GetPartPose("/world",temp_frame);
+            auto temp_pose = camera_.GetPartPose("/world",temp_frame);
+            if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
+                part_pose = temp_pose;
+            }
         }
         else{
             part_pose = camera_.GetPartPose("/world",temp_frame);
