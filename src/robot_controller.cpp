@@ -412,7 +412,11 @@ bool RobotController::PickPart(geometry_msgs::Pose& part_pose) {
 
 =======
     temp_pose_1 = part_pose;
+<<<<<<< HEAD
     temp_pose_1.position.x += 0.1;
+=======
+    temp_pose_1.position.x += 0.2;
+>>>>>>> 93e8a64... Drop orientation correction, and flip positions change
     temp_pose_1.position.z += 0.5;
 >>>>>>> 3ae4666... x offset correction
     ROS_INFO_STREAM("Going to waypoint...");
