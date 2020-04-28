@@ -25,7 +25,7 @@ robot_move_group_(robot_controller_options)
     robot_move_group_.setMaxAccelerationScalingFactor(0.8);
     robot_move_group_.setGoalPositionTolerance(0.005);
     robot_move_group_.setGoalOrientationTolerance(0.005);
-    robot_move_group_.setGoalJointTolerance(0.01);
+    robot_move_group_.setGoalJointTolerance(0.1);
     // robot_move_group_.setPlanningTime(10);
     // robot_move_group_.setNumPlanningAttempts(3);
     // robot_move_group_.setPlannerId("TRRTkConfigDefault");
@@ -73,8 +73,8 @@ robot_move_group_(robot_controller_options)
     part_flip_arm_1_pose_ = {-0.7, 4.65, -2.39, 2.14, 3.39, -1.51, 0};
     part_flip_arm_2_pose_ = {0.7, -1.63, -0.75, -2.14, 6.00, 1.75,0};
 
-    part_exch_arm_1_pose_ = {1.18, 4.4, -1.76, 2.14, 4.25, -1.5, 0};
-    part_exch_arm_2_pose_ = {-1.18, 1.38, -1.51, 2.2, 4, -1.63, 0};    
+    part_exch_arm_1_pose_ = {0.8, 4.4, -1.76, 2.14, 4.25, -1.5, 0};
+    part_exch_arm_2_pose_ = {-0.8, 1.38, -1.51, 2.2, 4, -1.63, 0};    
 
     //-- offset used for picking up parts
     //-- For the pulley_part, the offset is different since the pulley is thicker
@@ -286,9 +286,27 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
         robot_move_group_.setJointValueTarget(home_arm_2_pose_);
     }
     else if (pose=="arm1_exch"){
+        // unsigned int i = 0;
+        // for (const auto &joint_name: joint_names_){
+        //     if (i==0){
+        //         i++;
+        //         continue;
+        //     }
+        //     robot_move_group_.setJointValueTarget(joint_name, part_exch_arm_1_pose_[i]);
+        //     i++;
+        // }
         robot_move_group_.setJointValueTarget(part_exch_arm_1_pose_);
     }
     else if (pose=="arm2_exch"){
+        // unsigned int i = 0;
+        // for (const auto &joint_name: joint_names_){
+        //     if (i==0){
+        //         i++;
+        //         continue;
+        //     }
+        //     robot_move_group_.setJointValueTarget(joint_name, part_exch_arm_2_pose_[i]);
+        //     i++;
+        // }
         robot_move_group_.setJointValueTarget(part_exch_arm_2_pose_);
     }
     else if (pose=="drop_bin"){
