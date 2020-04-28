@@ -48,6 +48,9 @@ public:
     void SetPlanningTime(int time){
         robot_move_group_.setPlanningTime(time);
     }
+    void SetPlanningAttempts(int num){
+        robot_move_group_.setNumPlanningAttempts(num);
+    }
 
 private:
     ros::NodeHandle robot_controller_nh_;

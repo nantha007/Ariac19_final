@@ -1064,7 +1064,9 @@ void AriacOrderManager::ExecuteOrder() {
             ROS_INFO_STREAM("AGV ID: " << agv_id);
             for (const auto &product: products){
                 arm1_.SetPlanningTime(5);
-                arm1_.SetPlanningTime(5);
+                arm2_.SetPlanningTime(5);
+                arm1_.SetPlanningAttempts(3);
+                arm2_.SetPlanningAttempts(3);
                 ros::spinOnce();
                 product_type_pose_.first = product.type;
                 ROS_INFO_STREAM("Product type: " << product_type_pose_.first);
