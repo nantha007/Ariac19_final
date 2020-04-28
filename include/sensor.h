@@ -137,5 +137,5 @@ private:
     std::vector<int> slice_widths;
     std::vector<int> slice_heights;
     std::vector<int> slice_offsets;
-    bool is_part;
+    bool cur_slice_is_part;
 };

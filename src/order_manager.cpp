@@ -964,124 +964,107 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
     
     int part_num{0};
     geometry_msgs::Pose part_pose;
-    ros::Duration timeout(10.0);
+    ros::Duration timeout(10);
     ros::Time start_time = ros::Time::now();
-    bool failed_pick{false};
+    bool pick_state = false;
     double time;
-    while(ros::Time::now() - start_time<timeout){
-        std::string product_type = product_type_pose.first;
-        ROS_WARN_STREAM("Product type >>>> " << product_type);
-        ros::Time start_time_1 = ros::Time::now();
-        while(ros::Time::now() - start_time_1<timeout){
+
+    std::string product_type = product_type_pose.first;
+    geometry_msgs::Pose drop_pose = product_type_pose.second;
+
+    ROS_WARN_STREAM("Product type >>>> " << product_type);
+    
+    while(!pick_state){
+        ros::spinOnce();
+        bool part_in_list = false;
+        while(!part_in_list){
             ros::spinOnce();
             products_conveyor_list_ = camera_.get_conveyor_list();
             for (const auto &product: products_conveyor_list_){
                 if(std::get<0>(product)==product_type){
+                    part_in_list = true;
                     time = std::get<1>(product);
                     part_pose = std::get<2>(product);
+                    double waitTime = time - ros::Time::now().toSec();
+                    ROS_INFO_STREAM("The part is on the conveyor. Picking up in " << waitTime << " seconds.");
                     break;
                 }
-                else{
-                    time = 0.0;
-                }
             }
-            if (time!=0.0){
-                break;
+
+            if (ros::Time::now() - start_time > timeout) {
+                ROS_WARN_STREAM("The desired part is not on the conveyor");
+                return;
             }
         }
-        if (time==0){
-            ROS_WARN_STREAM("Part not found in the specified wait time");
-        }
+
         auto temp_pose = part_pose;
-        if(product_type == "pulley_part")
-                temp_pose.position.z += 0.08;
-        // temp_pose.position.y = -0.5;
-        // temp_pose.position.y = 1.05;
-        //--task the robot to pick up this part
-        ROS_INFO_STREAM("Moving to part...");
-        temp_pose.position.z += 0.05;
+
+        double wait_offset = .1;
+        double pick_offset = .024;
+
+        temp_pose.position.z += wait_offset;
+
         if (agv_id==1){
             arm1_.GoToTarget(temp_pose);
         }
         else{
             arm2_.GoToTarget(temp_pose);
         }
-        if (time-3<0){
-            time = 3-time;
-        }
-        else{
-            time = time -3;
-        }
-        while(ros::Time::now().toSec() < time){
-            ROS_WARN_STREAM_THROTTLE(4, "Waiting for the part");
+
+        double plan_time = 4;
+
+        ROS_INFO("Waiting for the part..");
+
+        while(ros::Time::now().toSec() < (time - plan_time)){
             ros::spinOnce();
         }
-        part_num = camera_.get_break_beam_trig_counter(1);
-        if (product_type=="piston_rod_part" || product_type=="gear_part"){
-            temp_pose.position.z -= 0.03;
-        }
-        else{
-            temp_pose.position.z -= 0.018;
-        }
+
+        temp_pose.position.z -= wait_offset;
+
+        temp_pose.position.z += pick_offset;
 
         if (agv_id==1){
             arm1_.GripperToggle(true);
-            ros::spinOnce();
-            failed_pick = arm1_.GetGripperState();
             arm1_.GoToTarget(temp_pose);
-            failed_pick = arm1_.PickPartFromConv(temp_pose);
+            pick_state = arm1_.GetGripperState();
         }
+
         else{
+            arm2_.GripperToggle(true);
             arm2_.GoToTarget(temp_pose);
-            failed_pick = arm2_.PickPartFromConv(temp_pose);
-        }
-        ROS_WARN_STREAM("Picking up state " << failed_pick);
-
-        if (failed_pick){
-            conv_part_num_ = part_num;
-            break;
+            pick_state = arm2_.GetGripperState();
         }
 
-        if (agv_id==1){
-            arm1_.SendRobotHome("conv");
-        }
-        else{
-            arm2_.SendRobotHome("conv");
+        if (pick_state) {
+            ROS_INFO_STREAM("The part was picked up successfully");
+            temp_pose.position.z += .1;
+            if (agv_id==1)
+                arm1_.GoToTarget(temp_pose);
+            else
+                arm2_.GoToTarget(temp_pose);
         }
 
-
+        else {
+            ROS_WARN_STREAM("The part was not picked up successfully. Trying again.");
+            if (agv_id==1){
+                arm1_.SendRobotHome("conv");
+            }
+            else {
+                arm2_.SendRobotHome("conv");
+            }
+        }
     }
-    // if (!failed_pick){
-    //     geometry_msgs::Pose dummy;
-    //     dummy.position.x=0;
-    //     dummy.position.y=0;
-    //     dummy.position.z=0;
-    //     return dummy;
-    // }
 
-    // arm1_.SetPlanner("RRTConnectkConfigDefault");
-    // arm2_.SetPlanner("RRTConnectkConfigDefault");
-    geometry_msgs::Pose drop_pose = product_type_pose.second;
     
-    bool result;
     if (agv_id==1){
         ROS_INFO_STREAM("Going to drop bin position....");
         arm1_.SendRobotHome("drop_bin");
-        // arm1_.ChangeOrientation(drop_pose.orientation, part_pose.orientation);
-        // result = arm1_.DropPart(drop_pose);
         arm1_.GripperToggle(false);
     }
     else {
         arm2_.SendRobotHome("drop_bin");
-        // arm2_.ChangeOrientation(drop_pose.orientation, part_pose.orientation);
         arm2_.GripperToggle(false);
-        // result = arm2_.DropPart(drop_pose);
     }
-    // return part_pose;
-    conv_part_num_ = part_num;
-
-
-
 }
 
 void AriacOrderManager::ConvCollect(int current_order_count) {

@@ -77,6 +77,6 @@ int main(int argc, char **argv) {
     EndCompetition(node);
 
     ROS_WARN_STREAM("Killing the node....");
-
+    
     return 0;
 }

@@ -254,12 +254,11 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
     else if (pose == "kit1_p2"){
         robot_move_group_.setJointValueTarget(home_joint_pose_kit1_p2_);
     }
-<<<<<<< HEAD
-=======
+
     else if (pose == "kit2_p2"){
         robot_move_group_.setJointValueTarget(home_joint_pose_kit2_p2_);
     }
->>>>>>> ea498ab... Orientation correction, drop in kit challenge done
+
     else if (pose=="conv"){
         robot_move_group_.setJointValueTarget(home_joint_pose_conv_);
     }

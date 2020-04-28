@@ -60,7 +60,7 @@ AriacSensorManager::AriacSensorManager(){
     break_beam_1_ = false;
     break_beam_2_ = false;
 
-    is_part = false;
+    cur_slice_is_part = false;
 
     // ros::spin();
 
@@ -70,12 +70,12 @@ AriacSensorManager::~AriacSensorManager() {}
 
 void AriacSensorManager::LogicalCamera1Callback(const osrf_gear::LogicalCameraImage::ConstPtr& image_msg){
     if (init_) return;
-    ROS_INFO_STREAM_THROTTLE(20,
-                             "Logical camera 1: '" << image_msg->models.size() << "' objects.");
+    // ROS_INFO_STREAM_THROTTLE(20,
+    //                          "Logical camera 1: '" << image_msg->models.size() << "' objects.");
 
-    if (image_msg->models.size() == 0) {
-        ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 1 does not see anything");
-    }
+    // if (image_msg->models.size() == 0) {
+    //     ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 1 does not see anything");
+    // }
 
     current_parts_1_ = *image_msg;
     this->BuildProductFrames(1);
@@ -83,10 +83,10 @@ void AriacSensorManager::LogicalCamera1Callback(const osrf_gear::LogicalCameraIm
 
 void AriacSensorManager::LogicalCamera2Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
     if (init_) return;
-    ROS_INFO_STREAM_THROTTLE(20,
-                             "Logical camera 2: '" << image_msg->models.size() << "' objects.");
-    if (image_msg->models.size() == 0)
-        ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 2 does not see anything");
+    // ROS_INFO_STREAM_THROTTLE(20,
+    //                          "Logical camera 2: '" << image_msg->models.size() << "' objects.");
+    // if (image_msg->models.size() == 0)
+    //     ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 2 does not see anything");
 
     current_parts_2_ = *image_msg;
     this->BuildProductFrames(2);
@@ -94,10 +94,10 @@ void AriacSensorManager::LogicalCamera2Callback(const osrf_gear::LogicalCameraIm
 
 void AriacSensorManager::LogicalCamera3Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
     if (init_) return;
-    ROS_INFO_STREAM_THROTTLE(20,
-                             "Logical camera 3: '" << image_msg->models.size() << "' objects.");
-    if (image_msg->models.size() == 0)
-        ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 3 does not see anything");
+    // ROS_INFO_STREAM_THROTTLE(20,
+    //                          "Logical camera 3: '" << image_msg->models.size() << "' objects.");
+    // if (image_msg->models.size() == 0)
+    //     ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 3 does not see anything");
 
     current_parts_3_ = *image_msg;
     this->BuildProductFrames(3);
@@ -105,10 +105,10 @@ void AriacSensorManager::LogicalCamera3Callback(const osrf_gear::LogicalCameraIm
 
 void AriacSensorManager::LogicalCamera4Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
     if (init_) return;
-    ROS_INFO_STREAM_THROTTLE(20,
-                             "Logical camera 4: '" << image_msg->models.size() << "' objects.");
-    if (image_msg->models.size() == 0)
-        ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 4 does not see anything");
+    // ROS_INFO_STREAM_THROTTLE(20,
+    //                          "Logical camera 4: '" << image_msg->models.size() << "' objects.");
+    // if (image_msg->models.size() == 0)
+    //     ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 4 does not see anything");
 
     current_parts_4_ = *image_msg;
     this->BuildProductFrames(4);
@@ -116,10 +116,10 @@ void AriacSensorManager::LogicalCamera4Callback(const osrf_gear::LogicalCameraIm
 
 void AriacSensorManager::LogicalCamera5Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
     if (init_) return;
-    ROS_INFO_STREAM_THROTTLE(20,
-                             "Logical camera 5: '" << image_msg->models.size() << "' objects.");
-    if (image_msg->models.size() == 0)
-        ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 5 does not see anything");
+    // ROS_INFO_STREAM_THROTTLE(20,
+    //                          "Logical camera 5: '" << image_msg->models.size() << "' objects.");
+    // if (image_msg->models.size() == 0)
+    //     ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 5 does not see anything");
 
     current_parts_5_ = *image_msg;
     this->BuildProductFrames(5);
@@ -127,10 +127,10 @@ void AriacSensorManager::LogicalCamera5Callback(const osrf_gear::LogicalCameraIm
 
 void AriacSensorManager::LogicalCamera6Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
     if (init_) return;
-    ROS_INFO_STREAM_THROTTLE(20,
-                             "Logical camera 6: '" << image_msg->models.size() << "' objects.");
-    if (image_msg->models.size() == 0)
-        ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 6 does not see anything");
+    // ROS_INFO_STREAM_THROTTLE(20,
+    //                          "Logical camera 6: '" << image_msg->models.size() << "' objects.");
+    // if (image_msg->models.size() == 0)
+    //     ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 6 does not see anything");
 
     current_parts_6_ = *image_msg;
     this->BuildProductFrames(6);
@@ -138,10 +138,10 @@ void AriacSensorManager::LogicalCamera6Callback(const osrf_gear::LogicalCameraIm
 
 void AriacSensorManager::LogicalCamera7Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
     // if (init_) return;   
-    ROS_INFO_STREAM_THROTTLE(20,
-                             "Logical camera 7: '" << image_msg->models.size() << "' objects.");
-    if (image_msg->models.size() == 0)
-        ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 7 does not see anything");
+    // ROS_INFO_STREAM_THROTTLE(20,
+    //                          "Logical camera 7: '" << image_msg->models.size() << "' objects.");
+    // if (image_msg->models.size() == 0)
+    //     ROS_WARN_STREAM_THROTTLE(20,"Logical Camera 7 does not see anything");
 
     current_parts_7_ = *image_msg;
     this->BuildProductFrames(7);
@@ -149,10 +149,10 @@ void AriacSensorManager::LogicalCamera7Callback(const osrf_gear::LogicalCameraIm
 
 void AriacSensorManager::QualitySensor1Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
 
-    ROS_WARN_STREAM_THROTTLE(30,
-                             "Quality sensor 1: '" << image_msg->models.size() << "' objects.");
-    if (image_msg->models.size() == 0)
-        ROS_INFO_STREAM_THROTTLE(30,"Quality sensor 1 does not see anything");
+    // ROS_WARN_STREAM_THROTTLE(30,
+    //                          "Quality sensor 1: '" << image_msg->models.size() << "' objects.");
+    // if (image_msg->models.size() == 0)
+    //     ROS_INFO_STREAM_THROTTLE(30,"Quality sensor 1 does not see anything");
     faulty_parts_1_num_ = image_msg->models.size();
     quality_parts_1_ = *image_msg;
     this->BuildProductFrames(8);
@@ -160,10 +160,10 @@ void AriacSensorManager::QualitySensor1Callback(const osrf_gear::LogicalCameraIm
 
 void AriacSensorManager::QualitySensor2Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
 
-    ROS_WARN_STREAM_THROTTLE(30,
-                             "Quality sensor 2: '" << image_msg->models.size() << "' objects.");
-    if (image_msg->models.size() == 0)
-        ROS_INFO_STREAM_THROTTLE(30,"Quality sensor 2 does not see anything");
+    // ROS_WARN_STREAM_THROTTLE(30,
+    //                          "Quality sensor 2: '" << image_msg->models.size() << "' objects.");
+    // if (image_msg->models.size() == 0)
+    //     ROS_INFO_STREAM_THROTTLE(30,"Quality sensor 2 does not see anything");
     faulty_parts_2_num_ = image_msg->models.size();
     quality_parts_2_ = *image_msg;
     this->BuildProductFrames(9);
@@ -281,9 +281,9 @@ geometry_msgs::Pose AriacSensorManager::GetPartPose(const std::string& src_frame
                                         const std::string& target_frame) {
     geometry_msgs::Pose part_pose;
 
-    ROS_INFO_STREAM("Getting part pose...");
-    ROS_INFO_STREAM("Source Frame" << src_frame);
-    ROS_INFO_STREAM("Target Frame" << target_frame);
+    // ROS_INFO_STREAM("Getting part pose...");
+    // ROS_INFO_STREAM("Source Frame" << src_frame);
+    // ROS_INFO_STREAM("Target Frame" << target_frame);
     try{
         camera_tf_listener_.waitForTransform(src_frame, target_frame, ros::Time(0),
                                              ros::Duration(3));
@@ -309,9 +309,9 @@ geometry_msgs::Pose AriacSensorManager::GetPartPoseFromConv(const std::string& s
                                         const std::string& target_frame) {
     geometry_msgs::Pose part_pose;
 
-    ROS_INFO_STREAM("Getting part pose...");
-    ROS_INFO_STREAM("Source Frame " << src_frame);
-    ROS_INFO_STREAM("Target Frame " << target_frame);
+    // ROS_INFO_STREAM("Getting part pose...");
+    // ROS_INFO_STREAM("Source Frame " << src_frame);
+    // ROS_INFO_STREAM("Target Frame " << target_frame);
 
     camera_tf_listener_.waitForTransform(src_frame, target_frame, ros::Time(0),
                                              ros::Duration(15));
@@ -332,7 +332,7 @@ geometry_msgs::Pose AriacSensorManager::GetPartPoseFromConv(const std::string& s
 //-- Break beam sensor 1 call back done for RWA-3
 void AriacSensorManager::breakBeam1Callback(const osrf_gear::Proximity::ConstPtr & msg) {
     if (msg->object_detected) {  // If there is an object in proximity.
-      ROS_WARN_STREAM("Break beam 1 triggered.");
+      // ROS_WARN_STREAM("Break beam 1 triggered.");
         break_beam_1_ = true;
         break_beam_1_trig_counter_++;
     } else {
@@ -343,7 +343,7 @@ void AriacSensorManager::breakBeam1Callback(const osrf_gear::Proximity::ConstPtr
 //-- Break beam sensor 2 call back which is right under the logical cam 4 done for RWA-3
 void AriacSensorManager::breakBeam2Callback(const osrf_gear::Proximity::ConstPtr & msg) {
     if (msg->object_detected) {  // If there is an object in proximity.
-        ROS_WARN_STREAM("Break beam 2 triggered.");
+        // ROS_WARN_STREAM("Break beam 2 triggered.");
         break_beam_2_ = true;
         break_beam_2_trig_counter_++;
         conveyor_parts_.erase(conveyor_parts_.begin());
@@ -353,132 +353,113 @@ void AriacSensorManager::breakBeam2Callback(const osrf_gear::Proximity::ConstPtr
 }
 
 void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::ConstPtr & laser_msg){
-    auto ranges = laser_msg->ranges;
+  // Get information from laser_msg
+  auto ranges = laser_msg->ranges;
+  auto max = laser_msg->angle_max;
+  auto min = laser_msg->angle_min;
+  auto increment = laser_msg->angle_increment;
 
-    auto max = laser_msg->angle_max;
-    auto min = laser_msg->angle_min;
-    auto increment = laser_msg->angle_increment;
+  double alpha = double(min);
+  std::vector<int> heights; //list of caclulated heights off of conveyor belt
+  std::vector<double> x_positions; //list of x_positions off of center of laser profiler
+  double conv_off = .69;
 
-
-    double alpha = double(min);
-    std::vector<int> heights;
-    std::vector<double> x_positions;
-
-    bool last_slice = is_part;
-    int width;
-    int avg_height;
-    int offset;
-
-    // For Calulcating part pose
-    std::string frame, world_frame;
-    world_frame = "/world";
-    geometry_msgs::Pose part_pose;
-    // part_pose.orientation.x = 0;
-    // part_pose.orientation.y = 0;
-    // part_pose.orientation.z = 0;
-    // part_pose.orientation.w = 0;
-    camera_tf_listener_.waitForTransform(world_frame, "/laser_profiler_1_laser_source_frame", ros::Time(0),
-                                             ros::Duration(3));
-    camera_tf_listener_.lookupTransform(world_frame, "/laser_profiler_1_laser_source_frame", ros::Time(0),
-                                            camera_tf_transform_);
-
-    part_pose.position.x = camera_tf_transform_.getOrigin().x();
-    part_pose.position.y = camera_tf_transform_.getOrigin().y();
-    double laser_y = part_pose.position.y;
-    part_pose.position.z = camera_tf_transform_.getOrigin().z();
-    // ROS_INFO_STREAM("The pose of the lp is x: " << part_pose.position.x << " y: "
-    //     <<part_pose.position.y << " z: "<<part_pose.position.z);
-
-
-    for (auto &range: ranges){
-        alpha = alpha + increment;
-        if(range<laser_msg->range_max && range>laser_msg->range_min)
-        {
-            int h = int((range*cos(alpha)-.69)*-1000);
-
-            if (h > 3){
-                heights.push_back(h);
-                double x_pos = range*sin(alpha);
-                x_positions.push_back(x_pos);
-            }
-        }
+  // loop through all the range data to fill height and x_poisition vectors
+  for (auto &range: ranges){
+    alpha = alpha + increment;
+    if(range<laser_msg->range_max && range>laser_msg->range_min){ //check that the range value is within acceptable range
+      int h = int((range*cos(alpha)- conv_off)*-1000); //calculate the height of the conveyor in mm
+      if (h > 3){ //range data has noise of about 2mm ignore any measurements below a threshold of 3mm
+          heights.push_back(h);
+          double x_pos = range*sin(alpha);
+          x_positions.push_back(x_pos);
+      }
     }
-
-
-    if (heights.size() != 0) {
-      is_part = 1;
-        double w = x_positions.front() - x_positions.back();
-        offset = int((x_positions.front() + x_positions.back())/2 *1000);
-
-      if (w<0)
-            w = w*-1;
-
-        width = int(w*1000);
-        int sum = 0;
-        for (int &h: heights)
-            sum = sum + h;
-
-        avg_height = int(sum/heights.size());
-      }
-      else
-        is_part = 0;
-
-      if (is_part && !last_slice){
-        start_time = laser_msg->header.stamp;
-        slice_widths.clear();
-        slice_heights.clear();
-      slice_offsets.clear();
-
-        slice_widths.push_back(width);
-        slice_heights.push_back(avg_height);
-        slice_offsets.push_back(offset);
-
-      }
-      if (last_slice && is_part){
-        slice_widths.push_back(width);
-        slice_heights.push_back(avg_height);
-        slice_offsets.push_back(offset);
-        end_time = laser_msg->header.stamp;
-      }
-      else if (last_slice){
-        int bound_l = int((end_time.toSec() - start_time.toSec())*.2 *1000);
-        int bound_w = *std::max_element(slice_widths.begin(),slice_widths.end());
-        int bound_h = *std::max_element(slice_heights.begin(),slice_heights.end());
-
-        std::string type;
-        if(bound_h < 8)
-            type = "piston_rod_part";
-        else if(bound_h >= 8)
-            type = "gear_part";
-
-        double time = start_time.toSec()+(end_time.toSec() - start_time.toSec())/2;
-
-        int sum = 0;
-        for (int &off: slice_offsets)
-            sum = sum + off;
-    
-        int x_offset = int(sum/slice_offsets.size());
-      part_pose.position.x = part_pose.position.x + x_offset/1000;
-      part_pose.position.y = -0.5;
-      part_pose.position.z = part_pose.position.z - 0.69 + bound_h/1000;
-
-      time = (laser_y + 0.5)/0.2 + time;
-        auto cur_part = std::make_tuple(type,time,part_pose);
-
-        conveyor_parts_.push_back(cur_part);
-
-        // ROS_INFO(" ");
-        // ROS_INFO("A new part was detected. The current list of parts is:");
-
-        for (auto &part: conveyor_parts_){
-            auto item_type = std::get<0>(part);
-          auto break_beam_time = std::get<1>(part);
-          auto x_pos = std::get<2>(part);
-          ROS_INFO_STREAM("item: " << item_type << " | x position: " << x_pos.position.x <<
-        " | y position: " << x_pos.position.y <<
-        " | z position: " << x_pos.position.z << " | time at laser: " << break_beam_time);
-        }
-
-        }
-
   }
+
+  bool last_slice_was_part = cur_slice_is_part;
+  int width;
+  int avg_height;
+  int offset;
+
+  // For Calulcating part pose
+  std::string world_frame  = "/world";
+  geometry_msgs::Pose part_pose;
+  camera_tf_listener_.waitForTransform(world_frame, "/laser_profiler_1_laser_source_frame", ros::Time(0),
+                                           ros::Duration(3));
+  camera_tf_listener_.lookupTransform(world_frame, "/laser_profiler_1_laser_source_frame", ros::Time(0),
+                                          camera_tf_transform_);
+
+  part_pose.position.x = camera_tf_transform_.getOrigin().x();
+  part_pose.position.y = camera_tf_transform_.getOrigin().y();
+  part_pose.position.z = camera_tf_transform_.getOrigin().z();
+
+  double laser_y = part_pose.position.y;
+
+  if (heights.size() != 0) {
+    cur_slice_is_part = 1;
+    int w = int(x_positions.back() - x_positions.front()*1000);
+    offset = int((x_positions.front() + x_positions.back())/2 *1000);
+
+    int sum = 0;
+    for (int &h: heights)
+        sum = sum + h;
+
+    avg_height = int(sum/heights.size());
+  }
+
+  else
+    cur_slice_is_part = 0;
+
+  if (cur_slice_is_part && !last_slice_was_part){
+    start_time = laser_msg->header.stamp;
+    slice_widths.clear();
+    slice_heights.clear();
+    slice_offsets.clear();
+
+    slice_widths.push_back(width);
+    slice_heights.push_back(avg_height);
+    slice_offsets.push_back(offset);
+  }
+
+  if (last_slice_was_part && cur_slice_is_part){
+    slice_widths.push_back(width);
+    slice_heights.push_back(avg_height);
+    slice_offsets.push_back(offset);
+    end_time = laser_msg->header.stamp;
+  }
+  else if (last_slice_was_part){
+    int bound_l = int((end_time.toSec() - start_time.toSec())*.2 *1000);
+    int bound_w = *std::max_element(slice_widths.begin(),slice_widths.end());
+    int bound_h = *std::max_element(slice_heights.begin(),slice_heights.end());
+
+    std::string type;
+    if(bound_h < 8)
+        type = "piston_rod_part";
+    else if(bound_h >= 8 && bound_h <15)
+        type = "gear_part";
+    else if(bound_h >= 15 && bound_h <50)
+        type = "gasket_part";
+    else
+        type = "pulley_part";
+
+    // ROS_INFO_STREAM(type);
+
+    double time = start_time.toSec()+(end_time.toSec() - start_time.toSec())/2;
+
+    int sum = 0;
+    for (int &off: slice_offsets)
+      sum = sum + off;
+
+  double pick_y = -0.5;
+  int x_offset = int(sum/slice_offsets.size());
+  part_pose.position.x = part_pose.position.x + x_offset/1000;
+  part_pose.position.y = pick_y;
+  part_pose.position.z = part_pose.position.z - 0.69 + bound_h/1000;
+
+  time = (laser_y - pick_y)/0.2 + time;
+  auto cur_part = std::make_tuple(type,time,part_pose);
+
+  conveyor_parts_.push_back(cur_part);
+  }
+}
