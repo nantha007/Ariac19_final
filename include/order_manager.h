@@ -35,8 +35,10 @@ public:
     void ConvCollect(int current_order_count);
     geometry_msgs::Pose PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id, double offset);
     void PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id, geometry_msgs::Pose part_pose, double offset);
+    void PickFromConv2(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id);
     std::pair<std::string, geometry_msgs::Pose> GetProductPair(std::string product_type);
     geometry_msgs::Pose FlipPartPickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id, bool conv);
+    geometry_msgs::Pose PickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id, bool conv);
 
 private:
     ros::NodeHandle order_manager_nh_;

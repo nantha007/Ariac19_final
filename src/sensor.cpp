@@ -438,8 +438,10 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
         type = "piston_rod_part";
     else if(bound_h >= 8 && bound_h <15)
         type = "gear_part";
-    else if(bound_h >= 15 && bound_h <50)
+    else if(bound_h >= 15 && bound_h <20)
         type = "gasket_part";
+    else if(bound_h >= 20 && bound_h <30)
+        type = "disk_part";
     else
         type = "pulley_part";
 
@@ -457,7 +459,7 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
     part_pose.position.y = pick_y;
     part_pose.position.z += (double(bound_h)/1000 - conv_off);
 
-    ROS_INFO_STREAM(part_pose.position.z);
+    ROS_INFO_STREAM(bound_h);
 
     time = (laser_y - pick_y)/0.2 + time;
     auto cur_part = std::make_tuple(type,time,part_pose);
