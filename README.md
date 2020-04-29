@@ -5,7 +5,7 @@ In the long run, when delivering two kits the arm to arm collision happens while
 ## Running the package:
 
 - Unpack the zip file "group3_final_project.zip" into "group3_final_project" folder into the workspace src directory.
-- Open two terminals.
+- Open four terminals.
 - In terminal-1:
 ```
 source /opt/ros/melodic/setup.bash
