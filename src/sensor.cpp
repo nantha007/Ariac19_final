@@ -335,6 +335,7 @@ void AriacSensorManager::breakBeam1Callback(const osrf_gear::Proximity::ConstPtr
       // ROS_WARN_STREAM("Break beam 1 triggered.");
         break_beam_1_ = true;
         break_beam_1_trig_counter_++;
+        conveyor_parts_.erase(conveyor_parts_.begin());
     } else {
         break_beam_1_ = false;
     }
@@ -346,7 +347,6 @@ void AriacSensorManager::breakBeam2Callback(const osrf_gear::Proximity::ConstPtr
         // ROS_WARN_STREAM("Break beam 2 triggered.");
         break_beam_2_ = true;
         break_beam_2_trig_counter_++;
-        conveyor_parts_.erase(conveyor_parts_.begin());
     } else {
         break_beam_2_ = false;
     }
@@ -443,7 +443,7 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
     else
         type = "pulley_part";
 
-    // ROS_INFO_STREAM(type);
+    ROS_INFO_STREAM(type);
 
     double time = start_time.toSec()+(end_time.toSec() - start_time.toSec())/2;
 
@@ -451,7 +451,7 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
     for (int &off: slice_offsets)
       sum = sum + off;
 
-  double pick_y = -0.5;
+  double pick_y = -0.2;
   int x_offset = int(sum/slice_offsets.size());
   part_pose.position.x = part_pose.position.x + x_offset/1000;
   part_pose.position.y = pick_y;

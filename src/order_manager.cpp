@@ -1000,7 +1000,6 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
         auto temp_pose = part_pose;
 
         double wait_offset = .1;
-        double pick_offset = .02;
 
         temp_pose.position.z += wait_offset;
 
@@ -1011,7 +1010,17 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
             arm2_.GoToTarget(temp_pose);
         }
 
-        double plan_time = 3;
+        double plan_time;
+        double pick_offset;
+
+        if (product_type == "piston_rod_part"){
+            plan_time = 3.85;
+            pick_offset = .02;
+        }
+        else if(product_type == "gear_part"){
+            plan_time = 3.85;
+            pick_offset = .025;
+        }
 
         ROS_INFO("Waiting for the part..");
 

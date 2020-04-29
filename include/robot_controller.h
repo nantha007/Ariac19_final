@@ -16,6 +16,7 @@
 #include <iostream>
 #include <string>
 #include <initializer_list>
+#include <tf/LinearMath/Quaternion.h>
 
 #include <osrf_gear/VacuumGripperControl.h>
 #include <osrf_gear/VacuumGripperState.h>
@@ -75,7 +76,6 @@ private:
     std::vector<double> home_joint_pose_conv_;
     std::vector<double> home_joint_pose_bin_;
     std::vector<double> home_joint_pose_kit1_;
-    std::vector<double> home_joint_pose_kit1_p2_;
     std::vector<double> home_joint_pose_kit2_;
     std::vector<double> home_joint_pose_kit1_p2_;
     std::vector<double> home_joint_pose_kit2_p2_;
