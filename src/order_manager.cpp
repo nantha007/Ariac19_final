@@ -549,6 +549,7 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
         return false;
     }
 
+<<<<<<< HEAD
     if(product_type_pose.first == "pulley_part")
         part_pose.position.z += 0.08;
     if (agv_id == 1){
@@ -562,6 +563,21 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
         while(!failed_pick){
             failed_pick = arm2_.PickPart(part_pose);
         }
+=======
+    tf::Quaternion Q;
+    double roll, pitch, yaw, rollReq, rollPart;
+    tf::quaternionMsgToTF(product_type_pose_.second.orientation,Q);
+    tf::Matrix3x3(Q).getRPY(rollReq,pitch,yaw);
+    tf::quaternionMsgToTF(part_pose.orientation,Q);
+    tf::Matrix3x3(Q).getRPY(rollPart,pitch,yaw);
+    roll = rollPart - rollReq;
+    ROS_WARN_STREAM("Roll is ->>>>> "<<roll);
+    if (roll>=2 || roll<=-2){
+        part_pose = this->FlipPartPickUp(product_type_pose.first, product_frame, part_pose, agv_id, true);
+    }
+    else{
+        part_pose = this->PickUp(product_type_pose.first, product_frame, part_pose, agv_id, true);
+>>>>>>> cb0205f... product frame conveyor
     }
     
     geometry_msgs::Pose drop_pose = product_type_pose.second;
@@ -1137,6 +1153,7 @@ void AriacOrderManager::ConvCollect(int current_order_count) {
         PickFromConv2(product_type_pose_,1);
         part_num = conv_part_num_ - 1;
         product_frame = "logical_camera_3_"+product+"_"+std::to_string(part_num)+"_frame";
+        product_type_pose_.first = product_frame;
         product_type_pose_.second = camera_.GetPartPose("/world",product_frame);
         products_list_conv_[product].emplace_back(product_type_pose_);
         // drop_bin_pose.position.y -= 0.2;
