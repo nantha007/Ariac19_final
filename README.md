@@ -1,14 +1,6 @@
-# Final project.
+# Final project
 
-# Todo
-
-- Adjusting the flipping without collision.
-- Conveyer parts list integration.
-- Drop parts handling.
-
-Link to the video -->
-
-
+In the long run, when delivering two kits the arm to arm collision happens while flipping. But when trying the flip standalone which is shown in flip_part.mp4 video. Full video simulation is shown in group3_final_project.mp4.
 
 ## Running the package:
 
