@@ -109,7 +109,7 @@ bool RobotController::Planner() {
 
 
 void RobotController::Execute() {
-    ros::AsyncSpinner spinner(4);
+    ros::AsyncSpinner spinner(6);
     spinner.start();
     if (this->Planner()) {
         robot_move_group_.move();
@@ -137,7 +137,7 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
         yaw = yaw_part - yaw_target;
     }
     ROS_INFO_STREAM(">>>>> Rotation :"<< yaw);
-    ros::AsyncSpinner spinner(4);
+    ros::AsyncSpinner spinner(6);
     spinner.start();
     
     ROS_INFO_STREAM("Adjusting the orientation");
@@ -170,7 +170,7 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
 void RobotController::GoToTarget(const geometry_msgs::Pose& pose) {
     target_pose_.orientation = fixed_orientation_;
     target_pose_.position = pose.position;
-    ros::AsyncSpinner spinner(4);
+    ros::AsyncSpinner spinner(6);
     robot_move_group_.setPoseTarget(target_pose_);
     spinner.start();
     if (this->Planner()) {
@@ -182,7 +182,7 @@ void RobotController::GoToTarget(const geometry_msgs::Pose& pose) {
 }
 
 void RobotController::GoToTarget(std::initializer_list<geometry_msgs::Pose> list) {
-    ros::AsyncSpinner spinner(4);
+    ros::AsyncSpinner spinner(6);
     spinner.start();
 
     std::vector<geometry_msgs::Pose> waypoints;
@@ -221,7 +221,7 @@ void RobotController::SendRobotExch(std::string arm, double buffer){
         temp_pose[0] += buffer;
     }
     robot_move_group_.setJointValueTarget(temp_pose); 
-    ros::AsyncSpinner spinner(4);
+    ros::AsyncSpinner spinner(6);
     spinner.start();
     if (this->Planner()) {
         robot_move_group_.move();
@@ -293,7 +293,7 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
         robot_move_group_.setJointValueTarget(home_joint_pose_bin_drop_);
     }
 
-    ros::AsyncSpinner spinner(4);
+    ros::AsyncSpinner spinner(6);
     spinner.start();
     if (this->Planner()) {
         robot_move_group_.move();
@@ -345,11 +345,9 @@ bool RobotController::DropPart(geometry_msgs::Pose part_pose, geometry_msgs::Pos
         this->GoToTarget({temp_pose, part_pose});
         ros::Duration(0.5).sleep();
         ros::spinOnce();
-
         ROS_INFO_STREAM("Actuating the gripper...");
         this->GripperToggle(false);
    
-
     }
 
     drop_flag_ = false;
