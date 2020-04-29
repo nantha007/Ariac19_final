@@ -1094,7 +1094,7 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
 
         if (pick_state) {
             ROS_INFO_STREAM("The part was picked up successfully");
-            temp_pose.position.z += .1;
+            temp_pose.position.z += .5;
             if (agv_id==1)
                 arm1_.GoToTarget(temp_pose);
             else

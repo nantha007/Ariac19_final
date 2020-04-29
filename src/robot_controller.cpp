@@ -169,9 +169,10 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
 }
 
 void RobotController::GoToTarget(const geometry_msgs::Pose& pose) {
-    // target_pose_.orientation = fixed_orientation_;
+    target_pose_.position = pose.position;
+    target_pose_.orientation = fixed_orientation_;
     ros::AsyncSpinner spinner(4);
-    robot_move_group_.setPoseTarget(pose);
+    robot_move_group_.setPoseTarget(target_pose_);
     spinner.start();
     if (this->Planner()) {
         robot_move_group_.move();
@@ -184,19 +185,19 @@ void RobotController::GoToTarget(std::initializer_list<geometry_msgs::Pose> list
     ros::AsyncSpinner spinner(4);
     spinner.start();
 
-    tf::Quaternion myQuaternion;
-    myQuaternion.setRPY(1.57, 1.57, 0);
+    // tf::Quaternion myQuaternion;
+    // myQuaternion.setRPY(1.57, 1.57, 0);
 
     std::vector<geometry_msgs::Pose> waypoints;
     for (auto i : list) {
-        // i.orientation.x = fixed_orientation_.x;
-        // i.orientation.y = fixed_orientation_.y;
-        // i.orientation.z = fixed_orientation_.z;
-        // i.orientation.w = fixed_orientation_.w;
-        i.orientation.x = myQuaternion[0];
-        i.orientation.y = myQuaternion[1];
-        i.orientation.z = myQuaternion[2];
-        i.orientation.w = myQuaternion[3];
+        i.orientation.x = fixed_orientation_.x;
+        i.orientation.y = fixed_orientation_.y;
+        i.orientation.z = fixed_orientation_.z;
+        i.orientation.w = fixed_orientation_.w;
+        // i.orientation.x = myQuaternion[0];
+        // i.orientation.y = myQuaternion[1];
+        // i.orientation.z = myQuaternion[2];
+        // i.orientation.w = myQuaternion[3];
         waypoints.emplace_back(i);
     }
 
@@ -435,10 +436,10 @@ bool RobotController::PickPartFromConv(geometry_msgs::Pose& part_pose, double pi
     tf::Quaternion myQuaternion;
     myQuaternion.setRPY(1.57, 1.57, 0);
 
-    part_pose.orientation.x = myQuaternion[0];
-    part_pose.orientation.y = myQuaternion[1];
-    part_pose.orientation.z = myQuaternion[2];
-    part_pose.orientation.w = myQuaternion[3];
+    fixed_orientation_.x = myQuaternion[0];
+    fixed_orientation_.y = myQuaternion[1];
+    fixed_orientation_.z = myQuaternion[2];
+    fixed_orientation_.w = myQuaternion[3];
 
     part_pose.position.z += wait_off;
 
