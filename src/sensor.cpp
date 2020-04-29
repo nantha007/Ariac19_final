@@ -438,13 +438,9 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
         type = "piston_rod_part";
     else if(bound_h >= 8 && bound_h <15)
         type = "gear_part";
-<<<<<<< HEAD
-    else if(bound_h >= 15 && bound_h <50)
-=======
     else if(bound_h >= 15 && bound_h <20)
         type = "gasket_part";
     else if(bound_h >= 20 && bound_h <30)
->>>>>>> origin/integration_laser
         type = "disk_part";
     else
         type = "pulley_part";

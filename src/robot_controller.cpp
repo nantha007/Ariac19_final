@@ -54,12 +54,7 @@ robot_move_group_(robot_controller_options)
     home_joint_pose_kit1_ = {1.18, 1.51, -1.00, 2.01, 3.66, -1.51, 0};
 
     home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
-    
-<<<<<<< HEAD
-    // home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
 
-=======
->>>>>>> origin/integration_laser
     home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.91, -1.51, 0};
     
     home_joint_pose_kit2_p2_ = {-1.18, 4.52, -0.75, 1.51, 3.91, -1.51, 0};
@@ -421,10 +416,6 @@ bool RobotController::PickPart(geometry_msgs::Pose& part_pose) {
         this->GripperToggle(true);
         ros::spinOnce();
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/integration_laser
     temp_pose_1 = part_pose;
     temp_pose_1.position.x += 0.1;
     temp_pose_1.position.z += 0.5;
