@@ -436,14 +436,14 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
     std::string type;
     if(bound_h < 8)
         type = "piston_rod_part";
-    else if(bound_h >= 8 && bound_h <15)
+    else if (bound_h >= 8 && bound_h <15)
         type = "gear_part";
-    else if(bound_h >= 15 && bound_h <50)
+    else if (bound_h >= 15 && bound_h <19)
         type = "gasket_part";
-    else
+    else if (bound_h >= 50)
         type = "pulley_part";
-
-    // ROS_INFO_STREAM(type);
+    else
+        type = "disk_part";
 
     double time = start_time.toSec()+(end_time.toSec() - start_time.toSec())/2;
 

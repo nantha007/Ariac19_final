@@ -19,8 +19,8 @@ options:
     order_part1: gasket_part
     order_part2: piston_rod_part
     order_part3: gear_part
-    order_part4: pulley_part
-    order_part5: disk_part
+    order_part4: disk_part
+    order_part5: pulley_part
   gazebo_state_logging: true
 
 orders:
@@ -59,12 +59,12 @@ orders:
 models_over_bins:
   bin1:
     models:
-      gear_part:
+      pulley_part:
         xyz_start: [0.1, 0.1, 0.0]
         xyz_end: [0.4, 0.47, 0.0]
         rpy: [0, 0, '-pi/4']
-        num_models_x: 0
-        num_models_y: 0
+        num_models_x: 1
+        num_models_y: 2
   bin2:
     models:
       gear_part:
@@ -91,12 +91,11 @@ models_over_bins:
         num_models_y: 2
 
 belt_models:
-  pulley_part:
+  disk_part:
     10.0:
       pose:
         xyz: [0.0, 0.0, 0.1]
         rpy: [0, 0, 'pi/2']
-
 sensor_blackout:
   product_count: 2
   duration: 50

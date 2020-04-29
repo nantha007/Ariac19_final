@@ -13,8 +13,8 @@ robot_controller_nh_("/ariac/"+arm_id),
 robot_controller_options("manipulator",
         "/ariac/"+arm_id+"/robot_description",
         robot_controller_nh_),
-robot_move_group_(robot_controller_options) 
-{   
+robot_move_group_(robot_controller_options)
+{
     arm_id_ = arm_id;
     ROS_WARN(">>>>> RobotController");
 
@@ -35,30 +35,30 @@ robot_move_group_(robot_controller_options)
     robot_move_group_.allowReplanning(true);
 
     home_joint_pose_bin_ = {0.0, 3.14, -1.26, 2.6, 3.55, -1.60, 0};
-    
+
     // home_joint_pose_bin_drop_ = {-1.0, 3.14, -1.26, 2.6, 3.55, -1.6, 0};
     home_joint_pose_bin_drop_ = {-1.18, 0.25, -1.51, -2.51, -0.55, -4.65, 0};
 
     //-- The joint positions for the home position to pick from the conveyer belt
     if (arm_id == "arm1"){
-        home_joint_pose_conv_ = {-1.0, 3.27, -2.38, -1.76, -0.55, -4.65, 0};
+        home_joint_pose_conv_ = {-1.0, 3.27, -2.38, -1.56, -0.55, -4.65, 0};
     }
     else{
-        home_joint_pose_conv_ = {1.0, 3.27, -2.38, -1.76, -0.55, -4.65, 0};
+        home_joint_pose_conv_ = {1.0, 3.27, -2.38, -1.56, -0.55, -4.65, 0};
     }
-    
 
-    joint_names_ = {"linear_arm_actuator_joint",  "shoulder_pan_joint", "shoulder_lift_joint", 
+
+    joint_names_ = {"linear_arm_actuator_joint",  "shoulder_pan_joint", "shoulder_lift_joint",
     "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"};
     // home_joint_pose_kit1_ = {1.18, 1.51, -1.26, 1.88, 4.02, -1.51, 0};
     home_joint_pose_kit1_ = {1.18, 1.51, -1.00, 2.01, 3.66, -1.51, 0};
 
     home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
-    
+
     home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
-    
+
     home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
-    
+
     home_joint_pose_kit2_p2_ = {-1.18, 4.52, -0.75, 1.51, 3.91, -1.51, 0};
 
     // home_joint_pose_kit2_ = {-1.18, 4.52, -1.00, 2., 3.66, -1.51, 0};
@@ -72,7 +72,7 @@ robot_move_group_(robot_controller_options)
     part_flip_arm_2_pose_ = {0.7, -1.63, -0.75, -2.14, 6.00, 1.75,0};
 
     part_exch_arm_1_pose_ = {0.8, 4.4, -1.76, 2.14, 4.25, -1.5, 0};
-    part_exch_arm_2_pose_ = {-0.8, 1.38, -1.51, 2.2, 4, -1.63, 0};    
+    part_exch_arm_2_pose_ = {-0.8, 1.38, -1.51, 2.2, 4, -1.63, 0};
 
     //-- offset used for picking up parts
     //-- For the pulley_part, the offset is different since the pulley is thicker
@@ -122,7 +122,7 @@ void RobotController::Execute() {
 
 void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_target, geometry_msgs::Quaternion orientation_part){
 
-    
+
     tf::Quaternion Q;
     double roll, pitch, yaw_target, yaw_part,yaw{0};
     tf::quaternionMsgToTF(orientation_target,Q);
@@ -141,7 +141,7 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
     ROS_INFO_STREAM(">>>>> Rotation :"<< yaw);
     ros::AsyncSpinner spinner(4);
     spinner.start();
-    
+
     ROS_INFO_STREAM("Adjusting the orientation");
     robot_move_group_.setJointValueTarget("wrist_3_joint",yaw);
     if (this->Planner()) {
@@ -170,7 +170,17 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
 }
 
 void RobotController::GoToTarget(const geometry_msgs::Pose& pose) {
-    target_pose_.orientation = fixed_orientation_;
+    // target_pose_.orientation = fixed_orientation_;
+    tf::Quaternion myQuaternion;
+    myQuaternion.setRPY(1.57, 1.57, 0);
+
+    // target_pose_.orientation = fixed_orientation_;
+    target_pose_.orientation.x = myQuaternion[0];
+    target_pose_.orientation.y = myQuaternion[1];
+    target_pose_.orientation.z = myQuaternion[2];
+    target_pose_.orientation.w = myQuaternion[3];
+
+
     target_pose_.position = pose.position;
     ros::AsyncSpinner spinner(4);
     robot_move_group_.setPoseTarget(target_pose_);
@@ -186,13 +196,19 @@ void RobotController::GoToTarget(const geometry_msgs::Pose& pose) {
 void RobotController::GoToTarget(std::initializer_list<geometry_msgs::Pose> list) {
     ros::AsyncSpinner spinner(4);
     spinner.start();
+    tf::Quaternion myQuaternion;
+    myQuaternion.setRPY(1.57, 1.57, 0);
 
     std::vector<geometry_msgs::Pose> waypoints;
     for (auto i : list) {
-        i.orientation.x = fixed_orientation_.x;
-        i.orientation.y = fixed_orientation_.y;
-        i.orientation.z = fixed_orientation_.z;
-        i.orientation.w = fixed_orientation_.w;
+        // i.orientation.x = fixed_orientation_.x;
+        // i.orientation.y = fixed_orientation_.y;
+        // i.orientation.z = fixed_orientation_.z;
+        // i.orientation.w = fixed_orientation_.w;
+        i.orientation.x = myQuaternion[0];
+        i.orientation.y = myQuaternion[1];
+        i.orientation.z = myQuaternion[2];
+        i.orientation.w = myQuaternion[3];
         waypoints.emplace_back(i);
     }
 
@@ -212,7 +228,7 @@ void RobotController::GoToTarget(std::initializer_list<geometry_msgs::Pose> list
 }
 
 void RobotController::SendRobotExch(std::string arm, double buffer){
-    
+
     std::vector<double> temp_pose;
     if (arm=="arm1"){
         temp_pose = part_flip_arm_1_pose_;
@@ -222,7 +238,7 @@ void RobotController::SendRobotExch(std::string arm, double buffer){
         temp_pose = part_flip_arm_2_pose_;
         temp_pose[0] += buffer;
     }
-    robot_move_group_.setJointValueTarget(temp_pose); 
+    robot_move_group_.setJointValueTarget(temp_pose);
     ros::AsyncSpinner spinner(4);
     spinner.start();
     if (this->Planner()) {
@@ -334,7 +350,7 @@ bool RobotController::DropPart(geometry_msgs::Pose part_pose, geometry_msgs::Pos
 
         ROS_INFO_STREAM("Actuating the gripper...");
         this->GripperToggle(false);
-   
+
 
     }
 

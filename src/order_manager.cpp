@@ -959,10 +959,10 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
     home_pose.position.z = 1.10;
 
     if (agv_id==1){
-        arm1_.GoToTarget(home_pose);
+        arm1_.SendRobotHome("conv");
     }
     else{
-        arm2_.GoToTarget(home_pose);
+        arm2_.SendRobotHome("conv");
     }
 
     int part_num{0};
@@ -1009,7 +1009,6 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
         double wait_offset = .1;
         double pick_offset = .024;
         double plan_time = 4.9;
-        ROS_INFO_STREAM("temp_pose x " << temp_pose.position.x << " temp_pose y " << temp_pose.position.y << "temp_pose.position.z " << temp_pose.position.z);
         if (product_type == "gear_part"){
           pick_offset = .024;
         }
@@ -1020,14 +1019,17 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
           pick_offset = .022;
           plan_time = 4.4;
         }
-        else {
-          ROS_INFO("pulley_part");
-          wait_offset = 1.5;
-          pick_offset = .022;
-          plan_time = 4.9;
+        else if (product_type == "pulley_part"){
+          wait_offset = 0.1;
+          pick_offset = .08;
+          plan_time = 4.4;
+        } else{
+          wait_offset = 0.1;
+          pick_offset = .024;
+          plan_time = 4.2;
+
         }
         temp_pose.position.z += wait_offset;
-        ROS_INFO_STREAM("temp_pose after: " << temp_pose.position.z);
         if (agv_id==1){
             arm1_.GoToTarget(temp_pose);
         }
@@ -1074,10 +1076,10 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
         else {
             ROS_WARN_STREAM("The part was not picked up successfully. Trying again.");
             if (agv_id==1){
-                arm1_.GoToTarget(home_pose);
+                arm1_.SendRobotHome("conv");
             }
             else {
-                arm2_.GoToTarget(home_pose);
+                arm2_.SendRobotHome("conv");
             }
         }
     }
