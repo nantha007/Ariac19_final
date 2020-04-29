@@ -501,7 +501,6 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
             }
         }
         parts_list_kit_1_.push_back(temp_frame);
-        arm1_.SendRobotHome("kit1_p2");
     }
     else{
         arm2_.SendRobotHome("kit2");
@@ -811,11 +810,9 @@ geometry_msgs::Pose AriacOrderManager::PickFromConv(const std::pair<std::string,
             ros::Duration(0.8).sleep();
             failed_pick = arm1_.GetGripperState();
             arm1_.GoToTarget(temp_pose);
-            failed_pick = arm1_.PickPartFromConv(temp_pose);
         }
         else{
             arm2_.GoToTarget(temp_pose);
-            failed_pick = arm2_.PickPartFromConv(temp_pose);
         }
         ROS_WARN_STREAM("Picking up state " << failed_pick);
 
@@ -920,13 +917,13 @@ void AriacOrderManager::PickFromConv(const std::pair<std::string,geometry_msgs::
             ros::Duration(0.8).sleep();
             failed_pick = arm1_.GetGripperState();
             arm1_.GoToTarget(temp_pose);
-            failed_pick = arm1_.PickPartFromConv(temp_pose);
+            // failed_pick = arm1_.PickPartFromConv(temp_pose);
         }
         else{
             arm2_.GripperToggle(true);
             failed_pick = arm2_.GetGripperState();
             arm2_.GoToTarget(temp_pose);
-            failed_pick = arm2_.PickPartFromConv(temp_pose);
+            // failed_pick = arm2_.PickPartFromConv(temp_pose);
         }
         ROS_WARN_STREAM("Picking up state " << failed_pick);
 
@@ -1055,7 +1052,7 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
     ros::Duration timeout(10);
     // ros::Time start_time = ros::Time::now();
     bool pick_state = false;
-    double time;
+    double pick_time;
 
     std::string product_type = product_type_pose.first;
     geometry_msgs::Pose drop_pose = product_type_pose.second;
@@ -1072,9 +1069,9 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
             for (const auto &product: products_conveyor_list_){
                 if(std::get<0>(product)==product_type){
                     part_in_list = true;
-                    time = std::get<1>(product);
+                    pick_time = std::get<1>(product);
                     part_pose = std::get<2>(product);
-                    double waitTime = time - ros::Time::now().toSec();
+                    double waitTime = pick_time - ros::Time::now().toSec();
                     ROS_INFO_STREAM("The part is on the conveyor. Picking up in " << waitTime << " seconds.");
                     break;
                 }
@@ -1088,54 +1085,16 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
 
         auto temp_pose = part_pose;
 
-        double wait_offset = .1;
+        if (agv_id==1)
+            pick_state = arm1_.PickPartFromConv(temp_pose,pick_time);
 
-        temp_pose.position.z += wait_offset;
+        else
+            pick_state = arm2_.PickPartFromConv(temp_pose,pick_time);
 
-        if (agv_id==1){
-            arm1_.GoToTarget(temp_pose);
-        }
-        else{
-            arm2_.GoToTarget(temp_pose);
-        }
-
-        double plan_time;
-        double pick_offset;
-
-        if (product_type == "piston_rod_part"){
-            plan_time = 3.85;
-            pick_offset = .02;
-        }
-        else if(product_type == "gear_part"){
-            plan_time = 3.85;
-            pick_offset = .025;
-        }
-
-        ROS_INFO("Waiting for the part..");
-
-        while(ros::Time::now().toSec() < (time - plan_time)){
-            ros::spinOnce();
-        }
-
-        temp_pose.position.z -= wait_offset;
-
-        temp_pose.position.z += pick_offset;
-
-        if (agv_id==1){
-            arm1_.GripperToggle(true);
-            arm1_.GoToTarget(temp_pose);
-            pick_state = arm1_.GetGripperState();
-        }
-
-        else{
-            arm2_.GripperToggle(true);
-            arm2_.GoToTarget(temp_pose);
-            pick_state = arm2_.GetGripperState();
-        }
 
         if (pick_state) {
             ROS_INFO_STREAM("The part was picked up successfully");
-            temp_pose.position.z += .1;
+            temp_pose.position.z += .5;
             if (agv_id==1)
                 arm1_.GoToTarget(temp_pose);
             else
@@ -1145,9 +1104,11 @@ void AriacOrderManager::PickFromConv2(const std::pair<std::string,geometry_msgs:
         else {
             ROS_WARN_STREAM("The part was not picked up successfully. Trying again.");
             if (agv_id==1){
+                arm1_.GripperToggle(false);
                 arm1_.SendRobotHome("conv");
             }
             else {
+                arm2_.GripperToggle(false);
                 arm2_.SendRobotHome("conv");
             }
         }

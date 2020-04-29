@@ -281,9 +281,9 @@ geometry_msgs::Pose AriacSensorManager::GetPartPose(const std::string& src_frame
                                         const std::string& target_frame) {
     geometry_msgs::Pose part_pose;
 
-    // ROS_INFO_STREAM("Getting part pose...");
-    // ROS_INFO_STREAM("Source Frame" << src_frame);
-    // ROS_INFO_STREAM("Target Frame" << target_frame);
+    ROS_INFO_STREAM("Getting part pose...");
+    ROS_INFO_STREAM("Source Frame" << src_frame);
+    ROS_INFO_STREAM("Target Frame" << target_frame);
     try{
         camera_tf_listener_.waitForTransform(src_frame, target_frame, ros::Time(0),
                                              ros::Duration(3));
@@ -438,12 +438,18 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
         type = "piston_rod_part";
     else if(bound_h >= 8 && bound_h <15)
         type = "gear_part";
+<<<<<<< HEAD
     else if(bound_h >= 15 && bound_h <50)
+=======
+    else if(bound_h >= 15 && bound_h <20)
+        type = "gasket_part";
+    else if(bound_h >= 20 && bound_h <30)
+>>>>>>> origin/integration_laser
         type = "disk_part";
     else
         type = "pulley_part";
 
-    ROS_INFO_STREAM(type);
+    
 
     double time = start_time.toSec()+(end_time.toSec() - start_time.toSec())/2;
 
@@ -451,15 +457,17 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
     for (int &off: slice_offsets)
       sum = sum + off;
 
-  double pick_y = -0.2;
-  int x_offset = int(sum/slice_offsets.size());
-  part_pose.position.x = part_pose.position.x + x_offset/1000;
-  part_pose.position.y = pick_y;
-  part_pose.position.z = part_pose.position.z - 0.69 + bound_h/1000;
+    double pick_y = -0.2;
+    int x_offset = int(sum/slice_offsets.size());
+    part_pose.position.x += x_offset/1000;
+    part_pose.position.y = pick_y;
+    part_pose.position.z += (double(bound_h)/1000 - conv_off);
 
-  time = (laser_y - pick_y)/0.2 + time;
-  auto cur_part = std::make_tuple(type,time,part_pose);
+    ROS_INFO_STREAM(bound_h);
 
-  conveyor_parts_.push_back(cur_part);
+    time = (laser_y - pick_y)/0.2 + time;
+    auto cur_part = std::make_tuple(type,time,part_pose);
+
+    conveyor_parts_.push_back(cur_part);
   }
 }
