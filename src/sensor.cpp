@@ -137,7 +137,7 @@ void AriacSensorManager::LogicalCamera6Callback(const osrf_gear::LogicalCameraIm
 }
 
 void AriacSensorManager::LogicalCamera7Callback(const osrf_gear::LogicalCameraImage::ConstPtr & image_msg){
-    // if (init_) return;   
+    // if (init_) return;
     // ROS_INFO_STREAM_THROTTLE(20,
     //                          "Logical camera 7: '" << image_msg->models.size() << "' objects.");
     // if (image_msg->models.size() == 0)
@@ -187,7 +187,7 @@ void AriacSensorManager::BuildProductFrames(int camera_id){
             //--build the frame for each product
             std::string product_frame = "logical_camera_2_" + msg.type + "_" +
                                         std::to_string(camera2_frame_counter_) + "_frame";
-    
+
             // product_frame_list_[msg.type].emplace_back(product_frame);
             product_type_pose_.first = product_frame;
             product_type_pose_.second = this->GetPartPose("/world",product_frame);
@@ -346,7 +346,7 @@ void AriacSensorManager::breakBeam2Callback(const osrf_gear::Proximity::ConstPtr
         // ROS_WARN_STREAM("Break beam 2 triggered.");
         break_beam_2_ = true;
         break_beam_2_trig_counter_++;
-        conveyor_parts_.erase(conveyor_parts_.begin());
+        // conveyor_parts_.erase(conveyor_parts_.begin());
     } else {
         break_beam_2_ = false;
     }
