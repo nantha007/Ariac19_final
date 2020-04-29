@@ -118,9 +118,9 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
     if (agv_id ==1){
         
         if (bin_number<=3){
-            bool failed_pick = arm2_.PickPart(part_pose);
-            arm2_.SendRobotHome("bin");
             arm1_.SendRobotExch("arm1",-0.5);
+            bool failed_pick = arm2_.PickPart(part_pose);
+            // arm2_.SendRobotHome("bin");
             ROS_WARN_STREAM("Picking up state "<< failed_pick);
             ros::Duration(1).sleep();
             while(!failed_pick){
@@ -200,9 +200,9 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
 
     else {
         if (bin_number>=3){
-            bool failed_pick = arm1_.PickPart(part_pose);
-            arm1_.SendRobotHome("bin");
             arm2_.SendRobotExch("arm2",-0.5);
+            bool failed_pick = arm1_.PickPart(part_pose);
+            // arm1_.SendRobotHome("bin");
             ROS_WARN_STREAM("Picking up state "<< failed_pick);
             ros::Duration(1).sleep();
             while(!failed_pick){
@@ -467,15 +467,14 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
         auto temp_frame = product_frame;
         temp_frame[15] = '8';
         
-        arm1_.SendRobotHome("kit1_p2");
         ros::Duration(1.0).sleep();
         if (arm1_.GetGripperState()){
+            arm1_.SendRobotHome("kit1_p2");
             auto temp_pose = camera_.GetPartPose("/world",temp_frame);
             if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
                 part_pose = temp_pose;
             }
-        }
-        else{
+        } else {
             part_pose = camera_.GetPartPose("/world",temp_frame);
             if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
                 auto temp_pose = part_pose;
@@ -489,13 +488,14 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
                     part_pose.position.z -= 0.01;
                     arm1_.GoToTarget(part_pose);
                     arm1_.GripperToggle(true);
-                    bool failed_pick = arm1_.GetGripperState();
+                    ros::spinOnce();
+                    failed_pick = arm1_.GetGripperState();
                 }
-                arm1_.SendRobotHome("kit1_p2");
-                ros::Duration(1.0).sleep();
-                part_pose = camera_.GetPartPose("/world",temp_frame);
-            }
-            else{
+                arm1_.GoToTarget(temp_pose);
+                // arm1_.SendRobotHome("kit1");
+                // ros::Duration(1.0).sleep();
+                // part_pose = camera_.GetPartPose("/world",temp_frame);
+            } else {
                 arm1_.SendRobotHome("kit1");
                 return temp_frame;
             }
@@ -539,9 +539,9 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
                     arm2_.GripperToggle(true);
                     bool failed_pick = arm2_.GetGripperState();
                 }
-                arm2_.SendRobotHome("kit2_p2");
-                ros::Duration(1.0).sleep();
-                part_pose = camera_.GetPartPose("/world",temp_frame);
+                // arm2_.SendRobotHome("kit2_p2");
+                arm2_.GoToTarget(temp_pose);
+                
             }
             else {
                 arm2_.SendRobotHome("kit2");
@@ -662,9 +662,7 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
                     arm1_.GripperToggle(true);
                     bool failed_pick = arm1_.GetGripperState();
                 }
-                arm1_.SendRobotHome("kit1_p2");
-                ros::Duration(1.0).sleep();
-                part_pose = camera_.GetPartPose("/world",temp_frame);
+                arm1_.GoToTarget(temp_pose);
             }
             else{
                 arm1_.SendRobotHome("kit1");
@@ -710,9 +708,7 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
                     arm2_.GripperToggle(true);
                     bool failed_pick = arm2_.GetGripperState();
                 }
-                arm2_.SendRobotHome("kit2_p2");
-                ros::Duration(1.0).sleep();
-                part_pose = camera_.GetPartPose("/world",temp_frame);
+                arm2_.GoToTarget(temp_pose);
             }
             else{
                 arm2_.SendRobotHome("kit2");
