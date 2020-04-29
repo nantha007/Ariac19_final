@@ -37,7 +37,7 @@ public:
     void GripperCallback(const osrf_gear::VacuumGripperState::ConstPtr& grip);
     void GripperStateCheck(geometry_msgs::Pose pose);
     bool PickPart(geometry_msgs::Pose& part_pose);
-    bool PickPartFromConv(geometry_msgs::Pose& part_pose);
+    bool PickPartFromConv(geometry_msgs::Pose& part_pose,double pick_time);
     void ChangeOrientation(geometry_msgs::Quaternion orientation,geometry_msgs::Quaternion orientation_part);
 
     bool GetGripperState(){

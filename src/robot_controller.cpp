@@ -168,22 +168,12 @@ void RobotController::ChangeOrientation(geometry_msgs::Quaternion orientation_ta
 }
 
 void RobotController::GoToTarget(const geometry_msgs::Pose& pose) {
-    tf::Quaternion myQuaternion;
-    myQuaternion.setRPY(1.57, 1.57, 0);
-
     // target_pose_.orientation = fixed_orientation_;
-    target_pose_.orientation.x = myQuaternion[0];
-    target_pose_.orientation.y = myQuaternion[1];
-    target_pose_.orientation.z = myQuaternion[2];
-    target_pose_.orientation.w = myQuaternion[3];
-
-    target_pose_.position = pose.position;
     ros::AsyncSpinner spinner(4);
-    robot_move_group_.setPoseTarget(target_pose_);
+    robot_move_group_.setPoseTarget(pose);
     spinner.start();
     if (this->Planner()) {
         robot_move_group_.move();
-        ros::Duration(0.5).sleep();
     }
     ROS_INFO_STREAM("Point reached...");
     spinner.stop();
@@ -315,9 +305,9 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
     tf::quaternionMsgToTF(fixed_orientation_,q);
     tf::Matrix3x3(q).getRPY(roll_def_,pitch_def_,yaw_def_);
 
-    ROS_INFO_STREAM("Roll: " << roll_def_ << "| Pitch: " <<  pitch_def_ << "| Yaw: " << yaw_def_);
+    // ROS_INFO_STREAM("Roll: " << roll_def_ << "| Pitch: " <<  pitch_def_ << "| Yaw: " << yaw_def_);
 
-    ros::Duration(0.5).sleep();
+    // ros::Duration(0.5).sleep();
 
 }
 
@@ -414,15 +404,48 @@ bool RobotController::PickPart(geometry_msgs::Pose& part_pose) {
     return gripper_state_;
 }
 
-bool RobotController::PickPartFromConv(geometry_msgs::Pose& part_pose) {
-    ROS_INFO_STREAM("Moving to part...");
-    ROS_INFO_STREAM("Actuating the gripper..." << part_pose.position.z);
-    // this->GripperToggle(true);
+bool RobotController::PickPartFromConv(geometry_msgs::Pose& part_pose, double pick_time) {
+    double plan_time = 1;
+    double move_time = 1;
+    double wait_off = .15;
+    double pick_off = .016;
+
+    robot_move_group_.setPlanningTime(plan_time);
+    robot_move_group_.setGoalPositionTolerance(0.001);
+
+    tf::Quaternion myQuaternion;
+    myQuaternion.setRPY(1.57, 1.57, 0);
+
+    part_pose.orientation.x = myQuaternion[0];
+    part_pose.orientation.y = myQuaternion[1];
+    part_pose.orientation.z = myQuaternion[2];
+    part_pose.orientation.w = myQuaternion[3];
+
+    part_pose.position.z += wait_off;
+
+    ROS_INFO_STREAM("Moving to wait position...");
+
+    this->GoToTarget(part_pose);
+
+    ROS_INFO_STREAM("Waiting for part...");
+
+    while(ros::Time::now().toSec() < (pick_time - plan_time - move_time)){
+        ros::spinOnce();
+    }
+
+    ROS_INFO_STREAM("Actuating the gripper...");
+    this->GripperToggle(true);
     ros::spinOnce();
 
-    auto temp_pose_1 = part_pose;
-    temp_pose_1.position.z += 0.3;
-    ROS_INFO_STREAM("Going to waypoint...");
-    this->GoToTarget(temp_pose_1);
+    part_pose.position.z -= (wait_off-pick_off);
+
+    ROS_INFO_STREAM("Approaching the part...");
+    this->GoToTarget(part_pose);
+
+    ros::Duration(.5).sleep();
+
+    robot_move_group_.setPlanningTime(3);
+    robot_move_group_.setGoalPositionTolerance(0.005);
+
     return gripper_state_;
 }

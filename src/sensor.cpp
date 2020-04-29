@@ -443,7 +443,7 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
     else
         type = "pulley_part";
 
-    ROS_INFO_STREAM(type);
+    
 
     double time = start_time.toSec()+(end_time.toSec() - start_time.toSec())/2;
 
@@ -451,15 +451,17 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
     for (int &off: slice_offsets)
       sum = sum + off;
 
-  double pick_y = -0.2;
-  int x_offset = int(sum/slice_offsets.size());
-  part_pose.position.x = part_pose.position.x + x_offset/1000;
-  part_pose.position.y = pick_y;
-  part_pose.position.z = part_pose.position.z - 0.69 + bound_h/1000;
+    double pick_y = -0.2;
+    int x_offset = int(sum/slice_offsets.size());
+    part_pose.position.x += x_offset/1000;
+    part_pose.position.y = pick_y;
+    part_pose.position.z += (double(bound_h)/1000 - conv_off);
 
-  time = (laser_y - pick_y)/0.2 + time;
-  auto cur_part = std::make_tuple(type,time,part_pose);
+    ROS_INFO_STREAM(part_pose.position.z);
 
-  conveyor_parts_.push_back(cur_part);
+    time = (laser_y - pick_y)/0.2 + time;
+    auto cur_part = std::make_tuple(type,time,part_pose);
+
+    conveyor_parts_.push_back(cur_part);
   }
 }
