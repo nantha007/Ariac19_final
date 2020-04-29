@@ -79,23 +79,28 @@ std::pair<std::string, geometry_msgs::Pose> AriacOrderManager::GetProductPair(st
 
 }
 
-geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id){
+geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id, bool conv){
 
-    std::string product_part_frame = product_frame;
-    std::string delimiter = "_";
-    unsigned int pos = 0;
-    unsigned int count = 0;
-    std::string token;
-    int binNumber;
-    while ((pos = product_part_frame.find(delimiter)) != std::string::npos) {
-        token = product_part_frame.substr(0, pos);
-        count++;
-        product_part_frame.erase(0, pos + 1);
-        if (count == 3){
-            break;
+    int bin_number;
+    if (!conv){
+        std::string product_part_frame = product_frame;
+        std::string delimiter = "_";
+        unsigned int pos = 0;
+        unsigned int count = 0;
+        std::string token;
+        while ((pos = product_part_frame.find(delimiter)) != std::string::npos) {
+            token = product_part_frame.substr(0, pos);
+            count++;
+            product_part_frame.erase(0, pos + 1);
+            if (count == 3){
+                break;
+            }
         }
+        bin_number = std::stoi(token,nullptr,0);
     }
-    int bin_number = std::stoi(token,nullptr,0);
+    else{
+        bin_number = 3;
+    }
 
     geometry_msgs::Pose rackDrop;
     rackDrop.position.x = 0.3;
@@ -114,6 +119,7 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
         
         if (bin_number<=3){
             bool failed_pick = arm2_.PickPart(part_pose);
+            arm2_.SendRobotHome("bin");
             arm1_.SendRobotExch("arm1",-0.5);
             ROS_WARN_STREAM("Picking up state "<< failed_pick);
             ros::Duration(1).sleep();
@@ -193,8 +199,9 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
     }
 
     else {
-        if (bin_number>=4){
+        if (bin_number>=3){
             bool failed_pick = arm1_.PickPart(part_pose);
+            arm1_.SendRobotHome("bin");
             arm2_.SendRobotExch("arm2",-0.5);
             ROS_WARN_STREAM("Picking up state "<< failed_pick);
             ros::Duration(1).sleep();
@@ -280,23 +287,28 @@ geometry_msgs::Pose AriacOrderManager::FlipPartPickUp(std::string product_type, 
 
 }
 
-geometry_msgs::Pose AriacOrderManager::PickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id){
+geometry_msgs::Pose AriacOrderManager::PickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id, bool conv){
 
-    std::string product_part_frame = product_frame;
-    std::string delimiter = "_";
-    unsigned int pos = 0;
-    unsigned int count = 0;
-    std::string token;
-    int binNumber;
-    while ((pos = product_part_frame.find(delimiter)) != std::string::npos) {
-        token = product_part_frame.substr(0, pos);
-        count++;
-        product_part_frame.erase(0, pos + 1);
-        if (count == 3){
-            break;
+    int bin_number;
+    if (!conv){
+        std::string product_part_frame = product_frame;
+        std::string delimiter = "_";
+        unsigned int pos = 0;
+        unsigned int count = 0;
+        std::string token;
+        while ((pos = product_part_frame.find(delimiter)) != std::string::npos) {
+            token = product_part_frame.substr(0, pos);
+            count++;
+            product_part_frame.erase(0, pos + 1);
+            if (count == 3){
+                break;
+            }
         }
+        bin_number = std::stoi(token,nullptr,0);
     }
-    int bin_number = std::stoi(token,nullptr,0);
+    else{
+        bin_number = 3;
+    }
     // auto part_pose = camera_.GetPartPose("/world", product_frame);
     
     bool failed_pick;
@@ -422,15 +434,18 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
     // auto part_pose = camera_.GetPartPose("/world",product_frame);
 
     tf::Quaternion Q;
-    double roll, pitch, yaw;
+    double roll, pitch, yaw, rollReq, rollPart;
     tf::quaternionMsgToTF(product_type_pose_.second.orientation,Q);
-    tf::Matrix3x3(Q).getRPY(roll,pitch,yaw);
+    tf::Matrix3x3(Q).getRPY(rollReq,pitch,yaw);
+    tf::quaternionMsgToTF(part_pose.orientation,Q);
+    tf::Matrix3x3(Q).getRPY(rollPart,pitch,yaw);
+    roll = rollPart - rollReq;
     ROS_WARN_STREAM("Roll is ->>>>> "<<roll);
     if (roll>=3 || roll<=-3){
-        part_pose = this->FlipPartPickUp(product_type, product_frame, part_pose, agv_id);
+        part_pose = this->FlipPartPickUp(product_type, product_frame, part_pose, agv_id, false);
     }
     else{
-        part_pose = this->PickUp(product_type, product_frame, part_pose, agv_id);
+        part_pose = this->PickUp(product_type, product_frame, part_pose, agv_id, false);
     }
 
     
@@ -455,15 +470,30 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
         arm1_.SendRobotHome("kit1_p2");
         ros::Duration(1.0).sleep();
         if (arm1_.GetGripperState()){
-            part_pose = camera_.GetPartPose("/world",temp_frame);
+            auto temp_pose = camera_.GetPartPose("/world",temp_frame);
+            if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
+                part_pose = temp_pose;
+            }
         }
         else{
             part_pose = camera_.GetPartPose("/world",temp_frame);
             if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
-                bool failed_pick = arm1_.PickPart(part_pose);
+                auto temp_pose = part_pose;
+                temp_pose.position.z += 0.15;
+                part_pose.position.z += 0.025;
+                if (product_type == "pulley_part"){ part_pose.position.z +=0.08;}
+                arm1_.GoToTarget({temp_pose,part_pose});
+                arm1_.GripperToggle(true);
+                bool failed_pick = arm1_.GetGripperState();
                 while(!failed_pick){
-                    failed_pick = arm1_.PickPart(part_pose);
+                    part_pose.position.z -= 0.01;
+                    arm1_.GoToTarget(part_pose);
+                    arm1_.GripperToggle(true);
+                    bool failed_pick = arm1_.GetGripperState();
                 }
+                arm1_.SendRobotHome("kit1_p2");
+                ros::Duration(1.0).sleep();
+                part_pose = camera_.GetPartPose("/world",temp_frame);
             }
             else{
                 arm1_.SendRobotHome("kit1");
@@ -471,7 +501,6 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
             }
         }
         parts_list_kit_1_.push_back(temp_frame);
-        arm1_.SendRobotHome("kit1_p2");
     }
     else{
         arm2_.SendRobotHome("kit2");
@@ -489,15 +518,30 @@ std::string AriacOrderManager::PickAndPlace(const std::pair<std::string,geometry
         arm2_.SendRobotHome("kit2_p2");
         ros::Duration(1.0).sleep();
         if (arm2_.GetGripperState()){
-            part_pose = camera_.GetPartPose("/world",temp_frame);
+            auto temp_pose = camera_.GetPartPose("/world",temp_frame);
+            if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
+                part_pose = temp_pose;
+            }
         }
         else{
             part_pose = camera_.GetPartPose("/world",temp_frame);
             if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
-                bool failed_pick = arm2_.PickPart(part_pose);
+                auto temp_pose = part_pose;
+                temp_pose.position.z += 0.15;
+                part_pose.position.z += 0.025;
+                if (product_type == "pulley_part"){ part_pose.position.z +=0.08;}
+                arm2_.GoToTarget({temp_pose,part_pose});
+                arm2_.GripperToggle(true);
+                bool failed_pick = arm2_.GetGripperState();
                 while(!failed_pick){
-                    failed_pick = arm2_.PickPart(part_pose);
+                    part_pose.position.z -= 0.01;
+                    arm2_.GoToTarget(part_pose);
+                    arm2_.GripperToggle(true);
+                    bool failed_pick = arm2_.GetGripperState();
                 }
+                arm2_.SendRobotHome("kit2_p2");
+                ros::Duration(1.0).sleep();
+                part_pose = camera_.GetPartPose("/world",temp_frame);
             }
             else {
                 arm2_.SendRobotHome("kit2");
@@ -539,7 +583,7 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
     
     geometry_msgs::Pose part_pose;
     std::string product_frame;
-    if (!products_list_conv_.empty() && products_list_conv_.find(product_type_pose.first)!=products_list_conv_.end()){
+    if (!products_list_conv_.empty() && products_list_conv_.find(product_type_pose.first)!=products_list_conv_.end() && !products_list_conv_[product_type_pose.first].empty()){
         auto product_pair = products_list_conv_[product_type_pose.first].back();
         product_frame = product_pair.first;
         part_pose = product_pair.second;
@@ -549,20 +593,34 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
         return false;
     }
 
-    if(product_type_pose.first == "pulley_part")
-        part_pose.position.z += 0.08;
-    if (agv_id == 1){
-        bool failed_pick = arm1_.PickPart(part_pose);
-        while(!failed_pick){
-            failed_pick = arm1_.PickPart(part_pose);
-        }
+    tf::Quaternion Q;
+    double roll, pitch, yaw, rollReq, rollPart;
+    tf::quaternionMsgToTF(product_type_pose_.second.orientation,Q);
+    tf::Matrix3x3(Q).getRPY(rollReq,pitch,yaw);
+    tf::quaternionMsgToTF(part_pose.orientation,Q);
+    tf::Matrix3x3(Q).getRPY(rollPart,pitch,yaw);
+    roll = rollPart - rollReq;
+    ROS_WARN_STREAM("Roll is ->>>>> "<<roll);
+    if (roll>=2 || roll<=-2){
+        part_pose = this->FlipPartPickUp(product_type_pose.first, product_frame, part_pose, agv_id, true);
     }
-    else {
-        bool failed_pick = arm2_.PickPart(part_pose);
-        while(!failed_pick){
-            failed_pick = arm2_.PickPart(part_pose);
-        }
+    else{
+        part_pose = this->PickUp(product_type_pose.first, product_frame, part_pose, agv_id, true);
     }
+    // if(product_type_pose.first == "pulley_part")
+    //     part_pose.position.z += 0.08;
+    // if (agv_id == 1){
+    //     bool failed_pick = arm1_.PickPart(part_pose);
+    //     while(!failed_pick){
+    //         failed_pick = arm1_.PickPart(part_pose);
+    //     }
+    // }
+    // else {
+    //     bool failed_pick = arm2_.PickPart(part_pose);
+    //     while(!failed_pick){
+    //         failed_pick = arm2_.PickPart(part_pose);
+    //     }
+    // }
     
     geometry_msgs::Pose drop_pose = product_type_pose.second;
 
@@ -584,15 +642,29 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
         arm1_.SendRobotHome("kit1_p2");
         ros::Duration(1.0).sleep();
         if (arm1_.GetGripperState()){
-            part_pose = camera_.GetPartPose("/world",temp_frame);
+            auto temp_pose = camera_.GetPartPose("/world",temp_frame);
+            if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
+                part_pose = temp_pose;
+            }
         }
         else{
             part_pose = camera_.GetPartPose("/world",temp_frame);
             if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
-                bool failed_pick = arm1_.PickPart(part_pose);
+                auto temp_pose = part_pose;
+                temp_pose.position.z += 0.15;
+                part_pose.position.z += 0.025;
+                arm1_.GoToTarget({temp_pose,part_pose});
+                arm1_.GripperToggle(true);
+                bool failed_pick = arm1_.GetGripperState();
                 while(!failed_pick){
-                    failed_pick = arm1_.PickPart(part_pose);
+                    part_pose.position.z -= 0.01;
+                    arm1_.GoToTarget(part_pose);
+                    arm1_.GripperToggle(true);
+                    bool failed_pick = arm1_.GetGripperState();
                 }
+                arm1_.SendRobotHome("kit1_p2");
+                ros::Duration(1.0).sleep();
+                part_pose = camera_.GetPartPose("/world",temp_frame);
             }
             else{
                 arm1_.SendRobotHome("kit1");
@@ -618,15 +690,29 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
         arm2_.SendRobotHome("kit2_p2");
         ros::Duration(1.0).sleep();
         if (arm2_.GetGripperState()){
-            part_pose = camera_.GetPartPose("/world",temp_frame);
+            auto temp_pose = camera_.GetPartPose("/world",temp_frame);
+            if(temp_pose.orientation.z!=100 && temp_pose.orientation.w!=100){
+                part_pose = temp_pose;
+            }
         }
         else{
             part_pose = camera_.GetPartPose("/world",temp_frame);
             if (part_pose.orientation.z!=100 && part_pose.orientation.w!=100){
-                bool failed_pick = arm2_.PickPart(part_pose);
+                auto temp_pose = part_pose;
+                temp_pose.position.z += 0.15;
+                part_pose.position.z += 0.025;
+                arm2_.GoToTarget({temp_pose,part_pose});
+                arm2_.GripperToggle(true);
+                bool failed_pick = arm2_.GetGripperState();
                 while(!failed_pick){
-                    failed_pick = arm2_.PickPart(part_pose);
+                    part_pose.position.z -= 0.01;
+                    arm2_.GoToTarget(part_pose);
+                    arm2_.GripperToggle(true);
+                    bool failed_pick = arm2_.GetGripperState();
                 }
+                arm2_.SendRobotHome("kit2_p2");
+                ros::Duration(1.0).sleep();
+                part_pose = camera_.GetPartPose("/world",temp_frame);
             }
             else{
                 arm2_.SendRobotHome("kit2");
@@ -697,11 +783,11 @@ geometry_msgs::Pose AriacOrderManager::PickFromConv(const std::pair<std::string,
         auto temp_pose = part_pose;
         if(product_type == "pulley_part")
                 temp_pose.position.z += 0.08;
-        temp_pose.position.y = -0.5;
+        temp_pose.position.y = -0.42;
         // temp_pose.position.y = 1.05;
         //--task the robot to pick up this part
         ROS_INFO_STREAM("Moving to part...");
-        temp_pose.position.z += 0.05;
+        temp_pose.position.z += 0.04;
         if (agv_id==1){
             arm1_.GoToTarget(temp_pose);
         }
@@ -721,13 +807,12 @@ geometry_msgs::Pose AriacOrderManager::PickFromConv(const std::pair<std::string,
         if (agv_id==1){
             arm1_.GripperToggle(true);
             ros::spinOnce();
+            ros::Duration(0.8).sleep();
             failed_pick = arm1_.GetGripperState();
             arm1_.GoToTarget(temp_pose);
-            // failed_pick = arm1_.PickPartFromConv(temp_pose);
         }
         else{
             arm2_.GoToTarget(temp_pose);
-            // failed_pick = arm2_.PickPartFromConv(temp_pose);
         }
         ROS_WARN_STREAM("Picking up state " << failed_pick);
 
@@ -801,11 +886,11 @@ void AriacOrderManager::PickFromConv(const std::pair<std::string,geometry_msgs::
         auto temp_pose = part_pose;
         if(product_type == "pulley_part")
                 temp_pose.position.z += 0.08;
-        temp_pose.position.y = -0.5;
+        temp_pose.position.y = -0.42;
         // temp_pose.position.y = 1.05;
         //--task the robot to pick up this part
         ROS_INFO_STREAM("Moving to part...");
-        temp_pose.position.z += 0.05;
+        temp_pose.position.z += 0.04;
         if (agv_id==1){
             arm1_.GoToTarget(temp_pose);
         }
@@ -829,6 +914,7 @@ void AriacOrderManager::PickFromConv(const std::pair<std::string,geometry_msgs::
         if (agv_id==1){
             arm1_.GripperToggle(true);
             ros::spinOnce();
+            ros::Duration(0.8).sleep();
             failed_pick = arm1_.GetGripperState();
             arm1_.GoToTarget(temp_pose);
             // failed_pick = arm1_.PickPartFromConv(temp_pose);
@@ -1101,6 +1187,7 @@ void AriacOrderManager::ConvCollect(int current_order_count) {
         PickFromConv2(product_type_pose_,1);
         part_num = conv_part_num_ - 1;
         product_frame = "logical_camera_3_"+product+"_"+std::to_string(part_num)+"_frame";
+        product_type_pose_.first = product_frame;
         product_type_pose_.second = camera_.GetPartPose("/world",product_frame);
         products_list_conv_[product].emplace_back(product_type_pose_);
         // drop_bin_pose.position.y -= 0.2;
@@ -1143,7 +1230,9 @@ void AriacOrderManager::ExecuteOrder() {
             ROS_INFO_STREAM("AGV ID: " << agv_id);
             for (const auto &product: products){
                 arm1_.SetPlanningTime(5);
-                arm1_.SetPlanningTime(5);
+                arm2_.SetPlanningTime(5);
+                arm1_.SetPlanningAttempts(3);
+                arm2_.SetPlanningAttempts(3);
                 ros::spinOnce();
                 product_type_pose_.first = product.type;
                 ROS_INFO_STREAM("Product type: " << product_type_pose_.first);

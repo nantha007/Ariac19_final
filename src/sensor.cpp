@@ -281,9 +281,9 @@ geometry_msgs::Pose AriacSensorManager::GetPartPose(const std::string& src_frame
                                         const std::string& target_frame) {
     geometry_msgs::Pose part_pose;
 
-    // ROS_INFO_STREAM("Getting part pose...");
-    // ROS_INFO_STREAM("Source Frame" << src_frame);
-    // ROS_INFO_STREAM("Target Frame" << target_frame);
+    ROS_INFO_STREAM("Getting part pose...");
+    ROS_INFO_STREAM("Source Frame" << src_frame);
+    ROS_INFO_STREAM("Target Frame" << target_frame);
     try{
         camera_tf_listener_.waitForTransform(src_frame, target_frame, ros::Time(0),
                                              ros::Duration(3));

@@ -36,8 +36,8 @@ robot_move_group_(robot_controller_options)
 
     home_joint_pose_bin_ = {0.0, 3.14, -1.26, 2.6, 3.55, -1.60, 0};
     
-    // home_joint_pose_bin_drop_ = {-1.0, 3.14, -1.26, 2.6, 3.55, -1.6, 0};
-    home_joint_pose_bin_drop_ = {-1.18, 0.25, -1.51, -2.51, -0.55, -4.65, 0};
+    home_joint_pose_bin_drop_ = {-1.18, 0.25, -2.14, -2.51, -0.31, -4.65, 0};
+    // home_joint_pose_bin_drop_ = {-1.18, 0.25, -1.51, -2.51, -0.55, -4.65, 0};
 
     //-- The joint positions for the home position to pick from the conveyer belt
     if (arm_id == "arm1"){
@@ -55,11 +55,12 @@ robot_move_group_(robot_controller_options)
 
     home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
     
-    home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
-    
-    home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
+    home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.91, -1.51, 0};
     
     home_joint_pose_kit2_p2_ = {-1.18, 4.52, -0.75, 1.51, 3.91, -1.51, 0};
+
+    // home_joint_pose_kit2_ = {-1.18, 4.52, -1.00, 2., 3.66, -1.51, 0};
+
 
     // home_joint_pose_kit2_ = {-1.18, 4.52, -1.00, 2., 3.66, -1.51, 0};
     home_arm_1_pose_ = {1.18, 0, -1.51, 0, 2.89, -1.51, 0};
@@ -257,11 +258,9 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
     else if (pose == "kit1_p2"){
         robot_move_group_.setJointValueTarget(home_joint_pose_kit1_p2_);
     }
-
     else if (pose == "kit2_p2"){
         robot_move_group_.setJointValueTarget(home_joint_pose_kit2_p2_);
     }
-
     else if (pose=="conv"){
         robot_move_group_.setJointValueTarget(home_joint_pose_conv_);
     }
@@ -272,9 +271,27 @@ void RobotController::SendRobotHome(std::string pose, double offset) {
         robot_move_group_.setJointValueTarget(home_arm_2_pose_);
     }
     else if (pose=="arm1_exch"){
+        // unsigned int i = 0;
+        // for (const auto &joint_name: joint_names_){
+        //     if (i==0){
+        //         i++;
+        //         continue;
+        //     }
+        //     robot_move_group_.setJointValueTarget(joint_name, part_exch_arm_1_pose_[i]);
+        //     i++;
+        // }
         robot_move_group_.setJointValueTarget(part_exch_arm_1_pose_);
     }
     else if (pose=="arm2_exch"){
+        // unsigned int i = 0;
+        // for (const auto &joint_name: joint_names_){
+        //     if (i==0){
+        //         i++;
+        //         continue;
+        //     }
+        //     robot_move_group_.setJointValueTarget(joint_name, part_exch_arm_2_pose_[i]);
+        //     i++;
+        // }
         robot_move_group_.setJointValueTarget(part_exch_arm_2_pose_);
     }
     else if (pose=="drop_bin"){
@@ -398,7 +415,9 @@ bool RobotController::PickPart(geometry_msgs::Pose& part_pose) {
         this->GripperToggle(true);
         ros::spinOnce();
     }
-
+    temp_pose_1 = part_pose;
+    temp_pose_1.position.x += 0.1;
+    temp_pose_1.position.z += 0.5;
     ROS_INFO_STREAM("Going to waypoint...");
     this->GoToTarget(temp_pose_1);
     return gripper_state_;
