@@ -51,7 +51,7 @@ orders:
           xyz: [-0.11, 0.18, 0]
           rpy: [0, 0, 0]
       part_4:
-        type: order_part5
+        type: order_part4
         pose:
           xyz: [0.0, 0.0, 0]
           rpy: ['pi', 0, 'pi']
@@ -67,7 +67,7 @@ models_over_bins:
         num_models_y: 0
   bin2:
     models:
-      gasket_part:
+      gear_part:
         xyz_start: [0.1, 0.1, 0.0]
         xyz_end: [0.35, 0.5, 0.0]
         rpy: [0, 0, 'pi/4']
