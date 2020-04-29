@@ -22,11 +22,7 @@
           $(arg gui_args)
           $(arg fill_demo_shipment_args)
           --visualize-sensor-views
-<<<<<<< HEAD
           -f $(find group3_final_project)/config/final_project_a.yaml
-=======
-          -f $(find group3_final_project)/config/gear_part_conv.yaml
->>>>>>> dd93c04... exchange pose and goal joint position tolerance to 0.1
           $(find group3_final_project)/config/group3_final_project_config.yaml
           " required="true" output="screen" />
 </launch>

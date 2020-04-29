@@ -594,22 +594,6 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
         return false;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    if(product_type_pose.first == "pulley_part")
-        part_pose.position.z += 0.08;
-    if (agv_id == 1){
-        bool failed_pick = arm1_.PickPart(part_pose);
-        while(!failed_pick){
-            failed_pick = arm1_.PickPart(part_pose);
-        }
-    }
-    else {
-        bool failed_pick = arm2_.PickPart(part_pose);
-        while(!failed_pick){
-            failed_pick = arm2_.PickPart(part_pose);
-        }
-=======
     tf::Quaternion Q;
     double roll, pitch, yaw, rollReq, rollPart;
     tf::quaternionMsgToTF(product_type_pose_.second.orientation,Q);
@@ -623,22 +607,6 @@ bool AriacOrderManager::PickAndPlaceFromConv(const std::pair<std::string,geometr
     }
     else{
         part_pose = this->PickUp(product_type_pose.first, product_frame, part_pose, agv_id, true);
->>>>>>> cb0205f... product frame conveyor
-=======
-    tf::Quaternion Q;
-    double roll, pitch, yaw, rollReq, rollPart;
-    tf::quaternionMsgToTF(product_type_pose_.second.orientation,Q);
-    tf::Matrix3x3(Q).getRPY(rollReq,pitch,yaw);
-    tf::quaternionMsgToTF(part_pose.orientation,Q);
-    tf::Matrix3x3(Q).getRPY(rollPart,pitch,yaw);
-    roll = rollPart - rollReq;
-    ROS_WARN_STREAM("Roll is ->>>>> "<<roll);
-    if (roll>=3 || roll<=-3){
-        part_pose = this->FlipPartPickUp(product_frame, product_frame, part_pose, agv_id, true);
-    }
-    else{
-        part_pose = this->PickUp(product_frame, product_frame, part_pose, agv_id, true);
->>>>>>> d623eb6... Changing the offset rising after pickup and conv flipping
     }
     // if(product_type_pose.first == "pulley_part")
     //     part_pose.position.z += 0.08;

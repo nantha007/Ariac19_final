@@ -55,13 +55,9 @@ robot_move_group_(robot_controller_options)
 
     home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
     
-<<<<<<< HEAD
-    home_joint_pose_kit1_p2_ = {1.18, 1.38, -0.75, 1.51, 3.91, -1.51, 0};
-    
-    home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
-=======
+    // home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.77, -1.51, 0};
+
     home_joint_pose_kit2_ = {-1.18, 4.52, -1.51, 2.26, 3.91, -1.51, 0};
->>>>>>> 7ae38fc... exch pose corrections
     
     home_joint_pose_kit2_p2_ = {-1.18, 4.52, -0.75, 1.51, 3.91, -1.51, 0};
 
@@ -430,22 +426,10 @@ bool RobotController::PickPart(geometry_msgs::Pose& part_pose) {
         this->GripperToggle(true);
         ros::spinOnce();
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
     temp_pose_1 = part_pose;
-<<<<<<< HEAD
     temp_pose_1.position.x += 0.1;
-=======
-    temp_pose_1.position.x += 0.2;
->>>>>>> 93e8a64... Drop orientation correction, and flip positions change
     temp_pose_1.position.z += 0.5;
->>>>>>> 3ae4666... x offset correction
-=======
-    temp_pose_1 = part_pose;
-    temp_pose_1.position.z += 0.5;
->>>>>>> d623eb6... Changing the offset rising after pickup and conv flipping
     ROS_INFO_STREAM("Going to waypoint...");
     this->GoToTarget(temp_pose_1);
     return gripper_state_;

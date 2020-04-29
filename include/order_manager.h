@@ -36,12 +36,9 @@ public:
     geometry_msgs::Pose PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id, double offset);
     void PickFromConv(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id, geometry_msgs::Pose part_pose, double offset);
     std::pair<std::string, geometry_msgs::Pose> GetProductPair(std::string product_type);
-<<<<<<< HEAD
-    geometry_msgs::Pose FlipPartPickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id);
+    // geometry_msgs::Pose FlipPartPickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id);
     void PickFromConv2(const std::pair<std::string,geometry_msgs::Pose> product_type_pose, int agv_id);
-=======
     geometry_msgs::Pose FlipPartPickUp(std::string product_type, std::string product_frame, geometry_msgs::Pose part_pose, int agv_id, bool conv);
->>>>>>> d623eb6... Changing the offset rising after pickup and conv flipping
 
 private:
     ros::NodeHandle order_manager_nh_;
