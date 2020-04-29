@@ -41,7 +41,7 @@ robot_move_group_(robot_controller_options)
 
     //-- The joint positions for the home position to pick from the conveyer belt
     if (arm_id == "arm1"){
-        home_joint_pose_conv_ = {-1.0, 3.27, -2.38, -1.76, -0.55, -4.65, 0};
+        home_joint_pose_conv_ = {-1.0, 3.27, -2.13, -1.76, -0.8, -4.65, 0};
     }
     else{
         home_joint_pose_conv_ = {1.0, 3.27, -2.38, -1.76, -0.55, -4.65, 0};
