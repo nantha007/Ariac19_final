@@ -81,7 +81,7 @@ public:
         }
     }
 
-    std::vector<std::tuple<std::string,double,geometry_msgs::Pose>> get_conveyor_list(){
+    std::vector<std::tuple<std::string,double,geometry_msgs::Pose,int>> get_conveyor_list(){
         return conveyor_parts_;
     }
 
@@ -95,9 +95,9 @@ private:
     ros::Subscriber camera_4_subscriber_;
     ros::Subscriber camera_5_subscriber_;
     ros::Subscriber camera_6_subscriber_;
-    ros::Subscriber camera_7_subscriber_;
+    // ros::Subscriber camera_7_subscriber_;
     ros::Subscriber break_beam_1_subscriber_;
-    ros::Subscriber break_beam_2_subscriber_;
+    // ros::Subscriber break_beam_2_subscriber_;
     ros::Subscriber quality_sensor_1_subscriber_;
     ros::Subscriber quality_sensor_2_subscriber_;
     ros::Subscriber laser_profiler_subscriber_;
@@ -130,7 +130,7 @@ private:
     int camera1_frame_counter_, camera2_frame_counter_, camera3_frame_counter_, camera4_frame_counter_, camera5_frame_counter_,
         camera6_frame_counter_, camera7_frame_counter_, break_beam_1_trig_counter_, break_beam_2_trig_counter_, faulty_parts_1_num_, faulty_parts_2_num_;
 
-    std::vector<std::tuple<std::string,double,geometry_msgs::Pose>> conveyor_parts_;
+    std::vector<std::tuple<std::string,double,geometry_msgs::Pose,int>> conveyor_parts_;
     ros::Time start_time;
     ros::Time end_time;
 
@@ -138,4 +138,5 @@ private:
     std::vector<int> slice_heights;
     std::vector<int> slice_offsets;
     bool cur_slice_is_part;
+    int count_;
 };

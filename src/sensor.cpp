@@ -18,16 +18,16 @@ AriacSensorManager::AriacSensorManager(){
                                                 &AriacSensorManager::LogicalCamera5Callback, this);
     camera_6_subscriber_ = sensor_nh_.subscribe("/ariac/logical_camera_6", 10,
                                                 &AriacSensorManager::LogicalCamera6Callback, this);
-    camera_7_subscriber_ = sensor_nh_.subscribe("/ariac/logical_camera_7", 10,
-                                                &AriacSensorManager::LogicalCamera7Callback, this);
+    // camera_7_subscriber_ = sensor_nh_.subscribe("/ariac/logical_camera_7", 10,
+    //                                             &AriacSensorManager::LogicalCamera7Callback, this);
     // camera_8_subscriber_ = sensor_nh_.subscribe("/ariac/logical_camera_8", 10,
     //                                             &AriacSensorManager::LogicalCamera8Callback, this);
     // camera_9_subscriber_ = sensor_nh_.subscribe("/ariac/logical_camera_9", 10,
     //                                             &AriacSensorManager::LogicalCamera9Callback, this);
     break_beam_1_subscriber_ = sensor_nh_.subscribe("/ariac/break_beam_1_change", 1000,
                                                 &AriacSensorManager::breakBeam1Callback, this);
-    break_beam_2_subscriber_ = sensor_nh_.subscribe("/ariac/break_beam_2_change", 1000,
-                                                &AriacSensorManager::breakBeam2Callback, this);
+    // break_beam_2_subscriber_ = sensor_nh_.subscribe("/ariac/break_beam_2_change", 1000,
+    //                                             &AriacSensorManager::breakBeam2Callback, this);
     quality_sensor_1_subscriber_ = sensor_nh_.subscribe("/ariac/quality_control_sensor_1", 10,
                                                 &AriacSensorManager::QualitySensor1Callback, this);
     quality_sensor_2_subscriber_ = sensor_nh_.subscribe("/ariac/quality_control_sensor_2", 10,
@@ -61,6 +61,7 @@ AriacSensorManager::AriacSensorManager(){
     break_beam_2_ = false;
 
     cur_slice_is_part = false;
+    count_ = 0;
 
     // ros::spin();
 
@@ -462,8 +463,10 @@ void AriacSensorManager::LaserProfilerCallback(const sensor_msgs::LaserScan::Con
     ROS_INFO_STREAM(bound_h);
 
     time = (laser_y - pick_y)/0.2 + time;
-    auto cur_part = std::make_tuple(type,time,part_pose);
+    count_ +=1;
+    auto cur_part = std::make_tuple(type,time,part_pose,count_);
 
     conveyor_parts_.push_back(cur_part);
+
   }
 }

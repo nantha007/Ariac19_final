@@ -73,7 +73,7 @@ private:
     std::vector<std::string> parts_list_kit_1_;
     std::vector<std::string> parts_list_kit_2_;
     int conv_part_num_;
-    std::vector<std::tuple<std::string,double,geometry_msgs::Pose>> products_conveyor_list_;
+    std::vector<std::tuple<std::string,double,geometry_msgs::Pose,int>> products_conveyor_list_;
 
 };
 
