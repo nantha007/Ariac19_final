@@ -1,0 +1,8 @@
+<map id="AriacOrderManager::RemoveFailureParts" name="AriacOrderManager::RemoveFailureParts">
+<area shape="rect" id="node2" href="$class_ariac_sensor_manager.html#aa3ad669261c07e0bc6fde0a0d8e4d5d3" title="AriacSensorManager\l::get_faulty_parts_num" alt="" coords="205,5,360,47"/>
+<area shape="rect" id="node3" href="$class_ariac_sensor_manager.html#afcbae332b69c955e4cbbe944db9f8971" title="AriacSensorManager\l::GetPartPose" alt="" coords="211,71,354,112"/>
+<area shape="rect" id="node4" href="$class_robot_controller.html#a5cbc7052a90309f720b205923e23e321" title="RobotController::PickPart" alt="" coords="197,137,368,163"/>
+<area shape="rect" id="node7" href="$class_robot_controller.html#a029b8e79b782b8dea4c9e35f9180750c" title="RobotController::DropPart" alt="" coords="196,187,369,214"/>
+<area shape="rect" id="node5" href="$class_robot_controller.html#a16e80d309f2c95be3d6ce0bf59a09ac6" title="RobotController::GoToTarget" alt="" coords="417,133,608,159"/>
+<area shape="rect" id="node6" href="$class_robot_controller.html#abba049067ff4de50e711e718e4af22a6" title="RobotController::Gripper\lToggle" alt="" coords="431,184,594,225"/>
+</map>

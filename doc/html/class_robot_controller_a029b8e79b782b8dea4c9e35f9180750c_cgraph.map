@@ -1,0 +1,4 @@
+<map id="RobotController::DropPart" name="RobotController::DropPart">
+<area shape="rect" id="node2" href="$class_robot_controller.html#a16e80d309f2c95be3d6ce0bf59a09ac6" title="RobotController::GoToTarget" alt="" coords="227,5,417,32"/>
+<area shape="rect" id="node3" href="$class_robot_controller.html#abba049067ff4de50e711e718e4af22a6" title="RobotController::Gripper\lToggle" alt="" coords="241,57,403,98"/>
+</map>

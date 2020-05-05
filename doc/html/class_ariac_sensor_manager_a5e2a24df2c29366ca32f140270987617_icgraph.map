@@ -1,0 +1,13 @@
+<map id="AriacSensorManager::BuildProductFrames" name="AriacSensorManager::BuildProductFrames">
+<area shape="rect" id="node2" href="$class_ariac_sensor_manager.html#a51213d447e5e4d8c16ef713728bb6c72" title="AriacSensorManager\l::get_part_list_faulty" alt="" coords="217,5,360,47"/>
+<area shape="rect" id="node3" href="$class_ariac_sensor_manager.html#ae7c98453000f7c83ba8358ed186dfbad" title="AriacSensorManager\l::LogicalCamera1Callback" alt="" coords="201,71,376,112"/>
+<area shape="rect" id="node5" href="$class_ariac_sensor_manager.html#a9f2404aa3984b6d968bf3fd0df36749b" title="AriacSensorManager\l::LogicalCamera2Callback" alt="" coords="201,136,376,177"/>
+<area shape="rect" id="node6" href="$class_ariac_sensor_manager.html#a2577beeb2867bf1ef36467a2925bda12" title="AriacSensorManager\l::LogicalCamera3Callback" alt="" coords="201,201,376,243"/>
+<area shape="rect" id="node7" href="$class_ariac_sensor_manager.html#a5ca933219579d8a83e71e5b11ff7b2de" title="AriacSensorManager\l::LogicalCamera4Callback" alt="" coords="201,267,376,308"/>
+<area shape="rect" id="node8" href="$class_ariac_sensor_manager.html#a9f3294c25a4615a29b30e125e7ea95e3" title="AriacSensorManager\l::LogicalCamera5Callback" alt="" coords="201,332,376,373"/>
+<area shape="rect" id="node9" href="$class_ariac_sensor_manager.html#a7e907d75ad84001c60f6f6e86298f3ce" title="AriacSensorManager\l::LogicalCamera6Callback" alt="" coords="201,397,376,439"/>
+<area shape="rect" id="node10" href="$class_ariac_sensor_manager.html#a3a37d293c1514710e63cbb6d91d2d00a" title="AriacSensorManager\l::LogicalCamera7Callback" alt="" coords="201,463,376,504"/>
+<area shape="rect" id="node11" href="$class_ariac_sensor_manager.html#ae24ae2f57938b3e6f5ef6dbc8205091e" title="AriacSensorManager\l::QualitySensor1Callback" alt="" coords="203,528,374,569"/>
+<area shape="rect" id="node12" href="$class_ariac_sensor_manager.html#a6aa4f2332ccf808af36707bcdee582b3" title="AriacSensorManager\l::QualitySensor2Callback" alt="" coords="203,593,374,635"/>
+<area shape="rect" id="node4" href="$class_ariac_sensor_manager.html#a25b36556b2df72ec26711220dc543bc1" title="AriacSensorManager\l::AriacSensorManager" alt="" coords="424,300,575,341"/>
+</map>

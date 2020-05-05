@@ -1,0 +1,4 @@
+<map id="Competition::send_arm_to_zero_state" name="Competition::send_arm_to_zero_state">
+<area shape="rect" id="node2" href="$class_competition.html#adbf5494f91bcce89eaa04dd76a6e5478" title="Called when a new Order message is received. " alt="" coords="211,5,355,47"/>
+<area shape="rect" id="node3" href="$class_competition.html#a87d9710e006b3567a6553f2303e62f57" title="Competition::arm_2\l_joint_state_callback" alt="" coords="211,71,355,112"/>
+</map>

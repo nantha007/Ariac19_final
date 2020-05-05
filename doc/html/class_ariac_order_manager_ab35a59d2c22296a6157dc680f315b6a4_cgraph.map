@@ -1,0 +1,12 @@
+<map id="AriacOrderManager::ConvCollect" name="AriacOrderManager::ConvCollect">
+<area shape="rect" id="node2" href="$class_ariac_sensor_manager.html#a62f9447680440510058d4ff3ad3dbdb1" title="AriacSensorManager\l::get_product_frame_list" alt="" coords="196,5,359,47"/>
+<area shape="rect" id="node3" href="$class_ariac_sensor_manager.html#a3416901226cac7d7631bd9f2dc4770ed" title="AriacSensorManager\l::get_conveyor_list" alt="" coords="446,31,589,72"/>
+<area shape="rect" id="node4" href="$class_ariac_order_manager.html#a0263afe78d59e2a908ba41d2267d37e2" title="Get the product frame for a product type. " alt="" coords="206,316,349,357"/>
+<area shape="rect" id="node5" href="$class_robot_controller.html#a5c4dc725acd4d06ca463e579ad2f5472" title="RobotController::SendRobotHome" alt="" coords="407,97,628,123"/>
+<area shape="rect" id="node7" href="$class_ariac_order_manager.html#a2c7f4dafc2ad788da33dcb513d96ccba" title="AriacOrderManager::\lPickFromConv2" alt="" coords="206,173,349,215"/>
+<area shape="rect" id="node9" href="$class_robot_controller.html#a16e80d309f2c95be3d6ce0bf59a09ac6" title="RobotController::GoToTarget" alt="" coords="676,206,867,233"/>
+<area shape="rect" id="node11" href="$class_ariac_sensor_manager.html#afcbae332b69c955e4cbbe944db9f8971" title="AriacSensorManager\l::GetPartPose" alt="" coords="206,381,349,423"/>
+<area shape="rect" id="node6" href="$class_robot_controller.html#a4a1175db5dbf2a89ff042ed3c0a50f9f" title="RobotController::Planner" alt="" coords="689,97,854,123"/>
+<area shape="rect" id="node8" href="$class_robot_controller.html#a2c1d1741856b451031c61e9cf42585c5" title="RobotController::PickPart\lFromConv" alt="" coords="432,199,603,240"/>
+<area shape="rect" id="node10" href="$class_robot_controller.html#abba049067ff4de50e711e718e4af22a6" title="RobotController::Gripper\lToggle" alt="" coords="690,283,853,324"/>
+</map>

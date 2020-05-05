@@ -1,0 +1,5 @@
+<map id="RobotController::RobotController" name="RobotController::RobotController">
+<area shape="rect" id="node2" href="$class_robot_controller.html#a090f746a28c6bcadcdb6ced46b7238b7" title="RobotController::Gripper\lCallback" alt="" coords="295,5,457,47"/>
+<area shape="rect" id="node3" href="$class_robot_controller.html#a5c4dc725acd4d06ca463e579ad2f5472" title="RobotController::SendRobotHome" alt="" coords="265,71,487,98"/>
+<area shape="rect" id="node4" href="$class_robot_controller.html#a4a1175db5dbf2a89ff042ed3c0a50f9f" title="RobotController::Planner" alt="" coords="535,71,700,98"/>
+</map>
